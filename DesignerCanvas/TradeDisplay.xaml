@@ -1,0 +1,175 @@
+﻿<UserControl x:Class="DesignerCanvas.TradeDisplay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:DesignerCanvas"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:my="clr-namespace:DesignerCanvas.Controls"
+             d:DesignHeight="500"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary Source="/DesignerCanvas;component/Resources/Generic.xaml" />
+    </UserControl.Resources>
+    <Grid Width="800"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <GroupBox Grid.Row="0"
+                  Grid.Column="0"
+                  Width="192"
+                  Height="500"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  Header="列表">
+            <StackPanel>
+                <my:TextBoxSearch x:Name="textBoxSearch"
+                                  Margin="15,15,15,0"
+                                  BorderBrush="Gray"
+                                  BorderThickness="1"
+                                  TextBoxBase.TextChanged="textBoxSearch_TextChanged" />
+                <Grid Margin="15,0,15,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="75" />
+                        <ColumnDefinition Width="75" />
+                    </Grid.ColumnDefinitions>
+                    <Button Name="btnTx"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Width="75"
+                            Height="25"
+                            Margin="0"
+                            HorizontalAlignment="Left"
+                            Background="White"
+                            BorderBrush="Gray"
+                            BorderThickness="1"
+                            Click="Button_Click"
+                            Content="交易" />
+                    <Button Name="btnSubTx"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Width="75"
+                            Height="25"
+                            Margin="0"
+                            HorizontalAlignment="Right"
+                            Background="#00000000"
+                            BorderBrush="Gray"
+                            Click="Button_Click"
+                            Content="组件" />
+                    <ListBox Name="lbTx"
+                             Grid.Row="1"
+                             Grid.Column="0"
+                             Grid.ColumnSpan="2"
+                             Height="400">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                <Setter Property="Padding" Value="0" />
+                            </Style>
+
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Button Background="#00000000"
+                                        BorderBrush="#00000000"
+                                        Margin="0,0,0,0" 
+                                        Width="140"
+                                        Content="{Binding Path=name}"
+                                        MouseDoubleClick="txButton_MouseDoubleClick"
+                                        Tag="{Binding Path=txcode}"
+                                        ToolTip="{Binding Path=txcode}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <ListBox Name="lbSubTx"
+                             Grid.Row="1"
+                             Grid.ColumnSpan="2"
+                             Height="400"
+                             VerticalAlignment="Bottom"
+                             Visibility="Hidden">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Padding" Value="0" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Button Margin="0,0,0,0" 
+                                        Background="#00000000"
+                                        BorderBrush="#00000000"
+                                        Width="140"
+                                        Content="{Binding Path=name}"
+                                        MouseDoubleClick="subtxButton_MouseDoubleClick"
+                                        Tag="{Binding Path=subtxcode}"
+                                        ToolTip="{Binding Path=subtxcode}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Grid.Row="0"
+                  Grid.Column="1"
+                  Width="595"
+                  Height="500"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  Header="流程编辑区">
+            <Grid Width="568"
+                  Height="460"
+                  Margin="8"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+                <ScrollViewer Grid.Row="0"
+                              Grid.RowSpan="3"
+                              Grid.Column="0"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                    <local:MyCanvas x:Name="mc" />
+                </ScrollViewer>
+                <TextBlock Name="tbTitle"
+                           Grid.Row="0"
+                           Height="25"
+                           MinWidth="100"
+                           Margin="8,1,1,1"
+                           HorizontalAlignment="Left" />
+                <WrapPanel Grid.Row="2" FlowDirection="RightToLeft">
+                    <Button Name="btnCancle"
+                            Margin="30,10,1,10"
+                            Click="btnCancle_Click"
+                            Content="清空" />
+
+                    <Button Name="btnDelete"
+                            Margin="0,10,0,10"
+                            Click="btnDelete_Click"
+                            Content="删除" />
+                    <Button Name="btnDeleteTrade"
+                            Margin="0,10,0,10"
+                            Click="btnDeleteTrade_Click"
+                            Content="删除交易" />
+                    <Button Name="btnNew"
+                            Margin="0,10,0,10"
+                            Click="btnNew_Click"
+                            Content="新建交易" />
+
+
+                </WrapPanel>
+            </Grid>
+        </GroupBox>
+
+
+    </Grid>
+</UserControl>

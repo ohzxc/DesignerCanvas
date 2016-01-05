@@ -1,0 +1,131 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:DesignerCanvas">
+    <Style TargetType="{x:Type s:Connection}">
+        <Style.Resources>
+            <!--  Style for the ConnectorAdorner thumbs  -->
+            <Style x:Key="ConnectionAdornerThumbStyle" TargetType="{x:Type Thumb}">
+                <Setter Property="Width" Value="12" />
+                <Setter Property="Height" Value="12" />
+                <Setter Property="SnapsToDevicePixels" Value="true" />
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <TranslateTransform X="-6" Y="-6" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Rectangle Fill="#AADCDCDC"
+                                       RadiusX="0"
+                                       RadiusY="0"
+                                       Stroke="DodgerBlue"
+                                       StrokeThickness="1" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <!--  Arrow Grid Style  -->
+            <Style x:Key="ArrowGridStyle" TargetType="Grid">
+                <Setter Property="Width" Value="10" />
+                <Setter Property="Height" Value="10" />
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <TranslateTransform X="-5" Y="-5" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <!--  base style for all arrow shapes  -->
+            <Style x:Key="ArrowSymbolBaseStyle" TargetType="Path">
+                <Setter Property="Fill" Value="Green" />
+                <Setter Property="Stretch" Value="Fill" />
+            </Style>
+            <!--  Arrow  -->
+            <Style x:Key="Arrow"
+                   BasedOn="{StaticResource ArrowSymbolBaseStyle}"
+                   TargetType="Path">
+                <Setter Property="Data" Value="M0,0 8,4 0,8 Z" />
+
+            </Style>
+            <!--  Diamond  -->
+            <Style x:Key="Diamond"
+                   BasedOn="{StaticResource ArrowSymbolBaseStyle}"
+                   TargetType="Path">
+                <Setter Property="Data" Value="M-5,0 0,-5 5,0 0,5 Z" />
+            </Style>
+        </Style.Resources>
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type s:Connection}">
+                    <Canvas DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                        <Path Name="PART_ConnectionPath"
+                              Data="{Binding PathGeometry}"
+                              SnapsToDevicePixels="True"
+                              Stroke="Green"
+                              StrokeDashArray="{Binding StrokeDashArray}"
+                              StrokeEndLineCap="Round"
+                              StrokeLineJoin="Round"
+                              StrokeStartLineCap="Round"
+                              StrokeThickness="4"
+                              ToolTip="{Binding Path=SelectedBrach,
+                                                Mode=TwoWay}" />
+                        <Grid Canvas.Left="{Binding AnchorPositionSource.X}"
+                              Canvas.Top="{Binding AnchorPositionSource.Y}"
+                              Style="{StaticResource ArrowGridStyle}">
+                            <Path Name="PART_SourceAnchorPath" />
+                            <Grid.LayoutTransform>
+                                <RotateTransform Angle="{Binding AnchorAngleSource}" />
+                            </Grid.LayoutTransform>
+                        </Grid>
+
+                        <Grid Canvas.Left="{Binding AnchorPositionSink.X}"
+                              Canvas.Top="{Binding AnchorPositionSink.Y}"
+                              Style="{StaticResource ArrowGridStyle}">
+                            <Path Name="PART_SinkAnchorPath" />
+                            <Grid.LayoutTransform>
+                                <RotateTransform Angle="{Binding AnchorAngleSink}" />
+                            </Grid.LayoutTransform>
+                        </Grid>
+
+                        <ComboBox x:Name="editBrach"
+                                  Canvas.Left="{Binding LabelPosition.X}"
+                                  Canvas.Top="{Binding LabelPosition.Y}"
+                                  Height="20"
+                                  MinWidth="70"
+                                  Cursor="Hand"
+                                  ItemsSource="{Binding Path=Brach,
+                                                        Mode=TwoWay}"
+                                  SelectedItem="{Binding Path=SelectedBrach,
+                                                         Mode=TwoWay}"
+                                  ToolTip="{Binding Path=SelectedBrach,
+                                                    Mode=TwoWay}">
+                            <ComboBox.RenderTransform>
+                                <TranslateTransform X="-15" Y="-20" />
+                            </ComboBox.RenderTransform>
+                        </ComboBox>
+                        <!--
+                            <Canvas.BitmapEffect>
+                            <DropShadowBitmapEffect Color="Gray" Direction="315" ShadowDepth="10" Softness="0" Opacity="0.1"/>
+                            </Canvas.BitmapEffect>
+                        -->
+                    </Canvas>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceArrowSymbol}" Value="Arrow">
+                            <Setter TargetName="PART_SourceAnchorPath" Property="Style" Value="{StaticResource Arrow}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceArrowSymbol}" Value="Diamond">
+                            <Setter TargetName="PART_SourceAnchorPath" Property="Style" Value="{StaticResource Diamond}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SinkArrowSymbol}" Value="Arrow">
+                            <Setter TargetName="PART_SinkAnchorPath" Property="Style" Value="{StaticResource Arrow}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SinkArrowSymbol}" Value="Diamond">
+                            <Setter TargetName="PART_SinkAnchorPath" Property="Style" Value="{StaticResource Diamond}" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
