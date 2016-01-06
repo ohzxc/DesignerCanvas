@@ -4,78 +4,6 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="d">
 
-    <!--  SimpleStyles.XAML 定义了一组控件样式，以这些样式为基础可简化创建个人控件的操作  -->
-
-    <!--
-        Brush: 这些 Brush 用于定义所有控件的背景、前景、选定内容和启用内容的颜色
-        如果要更改控件的颜色，只需更改画笔即可; 如果要添加新的形状或更改排列，随后还可编辑模板
-    -->
-
-    <!--  NormalBrush 用作 SimpleButton 和 SimpleRepeatButton 的背景  -->
-    <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0.0" Color="#EEE" />
-        <GradientStop Offset="1.0" Color="#CCC" />
-    </LinearGradientBrush>
-    <LinearGradientBrush x:Key="NormalBorderBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0.0" Color="#CCC" />
-        <GradientStop Offset="1.0" Color="#444" />
-    </LinearGradientBrush>
-
-    <!--  LightBrush 用于内容区域，如菜单和选项卡控件背景  -->
-    <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0.0" Color="#FFF" />
-        <GradientStop Offset="1.0" Color="#EEE" />
-    </LinearGradientBrush>
-
-    <!--  MouseOverBrush 用于 Button、Radio Button、CheckBox 中的 MouseOver  -->
-    <LinearGradientBrush x:Key="MouseOverBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0.0" Color="#FFF" />
-        <GradientStop Offset="1.0" Color="#AAA" />
-    </LinearGradientBrush>
-
-    <!--  PressedBrush 用于 Button、Radio Button、CheckBox 中的 Pressed  -->
-    <LinearGradientBrush x:Key="PressedBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0.0" Color="#BBB" />
-        <GradientStop Offset="0.1" Color="#EEE" />
-        <GradientStop Offset="0.9" Color="#EEE" />
-        <GradientStop Offset="1.0" Color="#FFF" />
-    </LinearGradientBrush>
-    <LinearGradientBrush x:Key="PressedBorderBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0.0" Color="#444" />
-        <GradientStop Offset="1.0" Color="#888" />
-    </LinearGradientBrush>
-
-    <!--  SelectedBackgroundBrush 用于 ListBoxItem、ComboBoxItem 中的 Selected 项  -->
-    <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
-
-    <!--  “已禁用的画笔”用于每个控件的 Disabled 外观  -->
-    <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
-    <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
-    <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
-
-    <!--  用于 ScrollViewer、TreeView、ListBox、Expander、TextBox、Tab 控件的背景  -->
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
-
-    <!--  DefaultedBorderBrush 用于显示 KeyBoardFocus  -->
-    <LinearGradientBrush x:Key="DefaultedBorderBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Offset="0.0" Color="#777" />
-        <GradientStop Offset="1.0" Color="#000" />
-    </LinearGradientBrush>
-
-    <SolidColorBrush x:Key="SolidBorderBrush1" Color="#888" />
-    <SolidColorBrush x:Key="LightBorderBrush" Color="#AAA" />
-    <SolidColorBrush x:Key="LightColorBrush" Color="#DDD" />
-
-    <!--  用于 Checkmark、Radio button、TreeViewItem、Expander ToggleButton 字形  -->
-    <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
-
-
-
-
-
-
-
-
     <Style x:Key="SimpleDesignerStyle"
            BasedOn="{x:Null}"
            TargetType="{x:Type Label}">
@@ -88,7 +16,7 @@
                             Background="#FFE5E5E5"
                             BorderBrush="#FFBEBEBE"
                             BorderThickness="1"
-                            CornerRadius="2">
+                            CornerRadius="5">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -102,9 +30,9 @@
                                               TextBlock.Foreground="Black" />
                             <Label x:Name="Rectangle"
                                    Grid.Column="1"
-                                   HorizontalAlignment="Stretch"
-                                   VerticalAlignment="Stretch"
-                                   IsHitTestVisible="False" Foreground="Red"/>
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False" Foreground="Gray"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>

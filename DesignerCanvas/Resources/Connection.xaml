@@ -27,17 +27,17 @@
             </Style>
             <!--  Arrow Grid Style  -->
             <Style x:Key="ArrowGridStyle" TargetType="Grid">
-                <Setter Property="Width" Value="10" />
-                <Setter Property="Height" Value="10" />
+                <Setter Property="Width" Value="12" />
+                <Setter Property="Height" Value="12" />
                 <Setter Property="RenderTransform">
                     <Setter.Value>
-                        <TranslateTransform X="-5" Y="-5" />
+                        <TranslateTransform X="-6" Y="-6" />
                     </Setter.Value>
                 </Setter>
             </Style>
             <!--  base style for all arrow shapes  -->
             <Style x:Key="ArrowSymbolBaseStyle" TargetType="Path">
-                <Setter Property="Fill" Value="Green" />
+                <Setter Property="Fill" Value="DodgerBlue" />
                 <Setter Property="Stretch" Value="Fill" />
             </Style>
             <!--  Arrow  -->
@@ -62,12 +62,12 @@
                         <Path Name="PART_ConnectionPath"
                               Data="{Binding PathGeometry}"
                               SnapsToDevicePixels="True"
-                              Stroke="Green"
+                              Stroke="DodgerBlue"
                               StrokeDashArray="{Binding StrokeDashArray}"
                               StrokeEndLineCap="Round"
                               StrokeLineJoin="Round"
                               StrokeStartLineCap="Round"
-                              StrokeThickness="4"
+                              StrokeThickness="1.5"
                               ToolTip="{Binding Path=SelectedBrach,
                                                 Mode=TwoWay}" />
                         <Grid Canvas.Left="{Binding AnchorPositionSource.X}"
@@ -99,7 +99,7 @@
                                   SelectedItem="{Binding Path=SelectedBrach,
                                                          Mode=TwoWay}"
                                   ToolTip="{Binding Path=SelectedBrach,
-                                                    Mode=TwoWay}">
+                                                    Mode=TwoWay}" SnapsToDevicePixels="True">
                             <ComboBox.RenderTransform>
                                 <TranslateTransform X="-15" Y="-20" />
                             </ComboBox.RenderTransform>

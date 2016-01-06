@@ -21,7 +21,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>             
 
     <!--  ConnectorDecoratorTemplate Default Template  -->
     <ControlTemplate x:Key="ConnectorDecoratorTemplate" TargetType="{x:Type Control}">
@@ -140,7 +140,7 @@
                         <!--  PART_ContentPresenter  -->
                         <ContentPresenter x:Name="PART_ContentPresenter"
                                           Margin="{TemplateBinding ContentControl.Padding}"
-                                          HorizontalAlignment="Stretch"
+                                          HorizontalAlignment="Left"
                                           VerticalAlignment="Stretch"
                                           Content="{TemplateBinding ContentControl.Content}" />
                         <!--  PART_ConnectorDecorator  -->

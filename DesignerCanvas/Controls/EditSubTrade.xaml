@@ -39,10 +39,10 @@
             <RowDefinition Height="23" />
             <RowDefinition Height="23" />
             <RowDefinition Height="70" />
-            <RowDefinition Height="100" />
+            <RowDefinition Height="80" />
             <RowDefinition Height="130" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="23" />
+            <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="1"
                    Grid.Column="0"
@@ -100,7 +100,7 @@
                   Header="可用返回值">
             <Grid>
                 <ListView Name="lvConditionList"
-                          Width="424"
+                          Width="424" 
                           VerticalAlignment="Top"
                           BorderBrush="#00000000" />
             </Grid>

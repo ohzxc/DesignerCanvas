@@ -78,7 +78,7 @@
                            Foreground="Red"
                            Text="{Binding ElementName=tbCode,
                                           Path=ToolTip}" />
-                <TextBox Name="tbName"
+                <TextBox  Name="tbName"
                          Margin="5,5,15,5"
                          FontSize="14" />
             </StackPanel>
