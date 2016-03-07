@@ -118,7 +118,7 @@
                           AutoGenerateColumns="False"
                           FrozenColumnCount="4"
                           GridLinesVisibility="Vertical"
-                          ItemsSource="{Binding}" CanUserResizeColumns="True" CanUserResizeRows="False">
+                          CanUserResizeColumns="True" CanUserResizeRows="False">
                     <DataGrid.RowValidationRules>
                         <local:RouteValidationRule ValidationStep="UpdatedValue" />
                     </DataGrid.RowValidationRules>

@@ -259,6 +259,7 @@ namespace DesignerCanvas
 
                 //editSubTrade.PassValuesEvent += new EditSubTrade.PassValuesHandler(ReceiveValues);
                 editSubTrade.ShowDialog();
+                
             }
             catch (Exception e)
             {

@@ -5,12 +5,12 @@
         <Style.Resources>
             <!--  Style for the ConnectorAdorner thumbs  -->
             <Style x:Key="ConnectionAdornerThumbStyle" TargetType="{x:Type Thumb}">
-                <Setter Property="Width" Value="12" />
-                <Setter Property="Height" Value="12" />
+                <Setter Property="Width" Value="10" />
+                <Setter Property="Height" Value="10" />
                 <Setter Property="SnapsToDevicePixels" Value="true" />
                 <Setter Property="RenderTransform">
                     <Setter.Value>
-                        <TranslateTransform X="-6" Y="-6" />
+                        <TranslateTransform X="-5" Y="-5" />
                     </Setter.Value>
                 </Setter>
                 <Setter Property="Template">
@@ -27,11 +27,11 @@
             </Style>
             <!--  Arrow Grid Style  -->
             <Style x:Key="ArrowGridStyle" TargetType="Grid">
-                <Setter Property="Width" Value="12" />
-                <Setter Property="Height" Value="12" />
+                <Setter Property="Width" Value="8" />
+                <Setter Property="Height" Value="8" />
                 <Setter Property="RenderTransform">
                     <Setter.Value>
-                        <TranslateTransform X="-6" Y="-6" />
+                        <TranslateTransform X="-4" Y="-4" />
                     </Setter.Value>
                 </Setter>
             </Style>
