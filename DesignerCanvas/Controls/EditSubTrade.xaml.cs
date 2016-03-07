@@ -114,7 +114,7 @@ namespace DesignerCanvas.Controls
                             //TradeCode = (string)x.TradeCode.Clone()
                         });
                     });
-                    dgRel.Items.Refresh();
+                    //dgRel.Items.Refresh();
                 }
             }
             (dgRel.DataContext as List<SubRel>).ForEach(x =>

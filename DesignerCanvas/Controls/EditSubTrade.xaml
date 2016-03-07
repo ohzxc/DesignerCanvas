@@ -118,6 +118,7 @@
                           AutoGenerateColumns="False"
                           FrozenColumnCount="4"
                           GridLinesVisibility="Vertical"
+                          ItemsSource="{Binding}"
                           CanUserResizeColumns="True" CanUserResizeRows="False">
                     <DataGrid.RowValidationRules>
                         <local:RouteValidationRule ValidationStep="UpdatedValue" />
@@ -155,6 +156,13 @@
                                             Binding="{Binding OutData,
                                                               Mode=TwoWay}"
                                             Header="值" />
+                        <DataGridTemplateColumn Header="操作" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding Path=Edit}">删除</Button> 
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
