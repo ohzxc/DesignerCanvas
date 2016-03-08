@@ -159,7 +159,7 @@
                         <DataGridTemplateColumn Header="操作" Width="100">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Command="{Binding Path=Edit}">删除</Button> 
+                                    <Button Click="Button_Click" Command="{Binding Path=Edit}">删除</Button> 
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

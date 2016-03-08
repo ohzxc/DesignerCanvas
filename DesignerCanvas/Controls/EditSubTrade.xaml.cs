@@ -11,9 +11,9 @@ namespace DesignerCanvas.Controls
     public partial class EditSubTrade : Window, INotifyPropertyChanged
     {
         public string TradeCode { get; set; }
-        //public delegate void PassValuesHandler(List<SubRel> e);
+        
         public List<SubRel> SubReList { get; set; }
-        //public event PassValuesHandler PassValuesEvent; 
+        
         public EditSubTrade(string tradecode,string name, string item, string flowcode, string tradeFlow, List<SubRel> subReList, List<string> conditionList)
         {
             TradeCode = tradecode;
@@ -69,6 +69,7 @@ namespace DesignerCanvas.Controls
             var hasError = false;
             if(_isOK)
             {
+                _isOK = false;
                 for (int i = 0; i < dgRel.Items.Count; i++)
                 {
                     DependencyObject o = dgRel.ItemContainerGenerator.ContainerFromIndex(i);
@@ -100,6 +101,7 @@ namespace DesignerCanvas.Controls
                 else
                 {
                     //TODO 异常
+                    dgRel.ItemsSource = null;
                     (dgRel.DataContext as List<SubRel>).Clear();
                     SubReList.ForEach(x =>
                     {
@@ -126,7 +128,11 @@ namespace DesignerCanvas.Controls
 
             //Do whatever you want here..
         }
-       
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+           // (((FrameworkElement)sender).DataContext as SubRel);
+        }
     }
 
 }
