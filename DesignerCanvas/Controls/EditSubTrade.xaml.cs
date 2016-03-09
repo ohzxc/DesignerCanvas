@@ -108,10 +108,10 @@ namespace DesignerCanvas.Controls
                         (dgRel.DataContext as List<SubRel>).Add(new SubRel()
                         {
                             //CompCode =(string) x.CompCode.Clone(),
-                            InData = (string)x.InData,
+                            InData =x.InData,
                             InType = x.InType,
-                            Memo = (string)x.Memo,
-                            OutData = (string)x.OutData,
+                            Memo = x.Memo,
+                            OutData = x.OutData,
                             //SerialNumber = (string)x.SerialNumber.Clone(),
                             //TradeCode = (string)x.TradeCode.Clone()
                         });
@@ -132,6 +132,42 @@ namespace DesignerCanvas.Controls
         private void Button_Click(object sender, RoutedEventArgs e)
         {
            // (((FrameworkElement)sender).DataContext as SubRel);
+        }
+
+        private void button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (dgRel.Items.Count <= 1) return;
+
+            (dgRel.DataContext as List<SubRel>).RemoveAt(dgRel.SelectedIndex);
+            var tmp =new List<SubRel>();
+            (dgRel.DataContext as List<SubRel>).ForEach(x =>
+            {
+                tmp.Add(new SubRel()
+                {
+                    //CompCode =(string) x.CompCode.Clone(),
+                    InData = (string)x.InData.Clone(),
+                    InType = x.InType,
+                    Memo = (string)x.Memo.Clone(),
+                    OutData = (string)x.OutData.Clone(),
+                    //SerialNumber = (string)x.SerialNumber.Clone(),
+                    //TradeCode = (string)x.TradeCode.Clone()
+                });
+            });
+                //TODO 异常
+                dgRel.ItemsSource = null;
+            //(dgRel.DataContext as List<SubRel>).Clear();
+
+            dgRel.ItemsSource = tmp;
+            dgRel.Items.Refresh();
+            
+                //var tmp= dgRel.CancelEdit(DataGridEditingUnit.Row);
+                //dgRel.Items.Refresh();
+
+            }
+
+        private void dgRel_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            var i = 1;
         }
     }
 

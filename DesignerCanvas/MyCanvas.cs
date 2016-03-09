@@ -752,7 +752,7 @@ namespace DesignerCanvas
             IEnumerable<DesignerItem> designerItems = this.Children.OfType<DesignerItem>();
             foreach (var Items in designerItems)
             {
-                if (Items.SubRelList.Count<1) return list;
+                if (Items.SubRelList.Count<1) continue;
                 Items.SubRelList.ForEach(x =>
                 {
                     list.Add(x);

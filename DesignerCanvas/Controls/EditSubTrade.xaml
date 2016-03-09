@@ -9,8 +9,7 @@
         Height="500"
         ResizeMode="CanMinimize"
         ShowInTaskbar="True"
-        SizeToContent="WidthAndHeight"
-        Topmost="True"
+        SizeToContent="WidthAndHeight"      
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
     <Window.Resources>
@@ -105,68 +104,53 @@
                           BorderBrush="#00000000" />
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="6"
+        <StackPanel Grid.Row="6"
                   Grid.Column="0"
-                  Grid.ColumnSpan="2"
-                  Margin="20,5,20,5"
+                  Grid.ColumnSpan="2">
+            <GroupBox 
+                  Width="454"
+                  MinHeight="60"
+                  Margin="12,5"
+                  VerticalAlignment="Top"
                   Header="参数">
-            <Grid>
-                <DataGrid x:Name="dgRel"
+                <Grid>
+                    <DataGrid x:Name="dgRel"
                           Width="426"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Top"
                           AutoGenerateColumns="False"
+                          CanUserResizeColumns="True"
+                          CanUserResizeRows="False"
                           FrozenColumnCount="4"
                           GridLinesVisibility="Vertical"
-                          ItemsSource="{Binding}"
-                          CanUserResizeColumns="True" CanUserResizeRows="False">
-                    <DataGrid.RowValidationRules>
-                        <local:RouteValidationRule ValidationStep="UpdatedValue" />
-                    </DataGrid.RowValidationRules>
-                    <DataGrid.RowValidationErrorTemplate>
-                        <ControlTemplate>
-                            <Grid Margin="0,-2,0,-2" ToolTip="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)[0].ErrorContent}">
-                                <Ellipse Width="{TemplateBinding FontSize}"
-                                         Height="{TemplateBinding FontSize}"
-                                         Fill="Red"
-                                         StrokeThickness="0" />
-                                <TextBlock HorizontalAlignment="Center"
-                                           FontSize="{TemplateBinding FontSize}"
-                                           FontWeight="Bold"
-                                           Foreground="White"
-                                           Text="!" />
-                            </Grid>
-                        </ControlTemplate>
-                    </DataGrid.RowValidationErrorTemplate>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Width="80"
+                          ItemsSource="{Binding}">
+                        <DataGrid.RowValidationRules>
+                            <local:RouteValidationRule ValidationStep="UpdatedValue" />
+                        </DataGrid.RowValidationRules>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="80"
                                             Binding="{Binding Memo,
                                                               Mode=TwoWay}"
                                             Header="描述" />
-                        <DataGridTextColumn Width="50"
+                            <DataGridTextColumn Width="50"
                                             Binding="{Binding InData,
                                                               Mode=TwoWay}"
                                             Header="域" />
-                        <DataGridComboBoxColumn Width="80"
+                            <DataGridComboBoxColumn Width="80"
                                                 Header="值类型"
                                                 ItemsSource="{Binding Source={StaticResource typeEnum}}"
                                                 SelectedItemBinding="{Binding InType,
                                                                               Mode=TwoWay}" />
-                        <DataGridTextColumn Width="100"
+                            <DataGridTextColumn Width="100"
                                             Binding="{Binding OutData,
                                                               Mode=TwoWay}"
                                             Header="值" />
-                        <DataGridTemplateColumn Header="操作" Width="100">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Click="Button_Click" Command="{Binding Path=Edit}">删除</Button> 
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-        </GroupBox>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+            <TextBlock Margin="27,0" FontSize="9" Text="选中某一行，按Delete键可删除该行" Foreground="Red"></TextBlock>
+        </StackPanel>
         <Button Name="btnOK"
                 Grid.Row="7"
                 Grid.Column="0"
@@ -185,5 +169,6 @@
                    Margin="192,21,0,0"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top" />
+        <Button x:Name="button" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="232,46,0,0" Grid.Row="7" VerticalAlignment="Top" Width="75" Click="button_Click_1"/>
     </Grid>
 </Window>

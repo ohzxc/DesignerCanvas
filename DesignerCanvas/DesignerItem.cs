@@ -256,7 +256,7 @@ namespace DesignerCanvas
             try
             {
                 var editSubTrade = new EditSubTrade(Tradecode,compName, comp_code, serialnumber, tradeFlow, SubRelList, conditionList);
-
+                editSubTrade.Owner = Application.Current.MainWindow;
                 //editSubTrade.PassValuesEvent += new EditSubTrade.PassValuesHandler(ReceiveValues);
                 editSubTrade.ShowDialog();
                 
