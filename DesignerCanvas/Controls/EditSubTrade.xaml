@@ -113,10 +113,9 @@
                   Margin="12,5"
                   VerticalAlignment="Top"
                   Header="参数">
-                <Grid>
+                <StackPanel>
                     <DataGrid x:Name="dgRel"
-                          Width="426"
-                          HorizontalAlignment="Left"
+                          HorizontalAlignment="Stretch" 
                           VerticalAlignment="Top"
                           AutoGenerateColumns="False"
                           CanUserResizeColumns="True"
@@ -147,7 +146,9 @@
                                             Header="值" />
                         </DataGrid.Columns>
                     </DataGrid>
-                </Grid>
+                    <Button x:Name="button" HorizontalAlignment="Right" Content="删除"  Click="button_Click_1"/>
+                </StackPanel>
+                
             </GroupBox>
             <TextBlock Margin="27,0" FontSize="9" Text="选中某一行，按Delete键可删除该行" Foreground="Red"></TextBlock>
         </StackPanel>
@@ -169,6 +170,6 @@
                    Margin="192,21,0,0"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top" />
-        <Button x:Name="button" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="232,46,0,0" Grid.Row="7" VerticalAlignment="Top" Width="75" Click="button_Click_1"/>
+        
     </Grid>
 </Window>

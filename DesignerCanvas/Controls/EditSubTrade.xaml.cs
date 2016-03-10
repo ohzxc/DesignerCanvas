@@ -136,10 +136,54 @@ namespace DesignerCanvas.Controls
 
         private void button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (dgRel.Items.Count <= 1) return;
+            if (dgRel.Items.Count <= 1 || (dgRel.ItemsSource as List<SubRel>).Count < dgRel.SelectedIndex + 1) return;
+            if (dgRel.SelectedIndex < 0)
+            {
+                MessageBox.Show("请写选中某一行再进行删除操作。");
+                return;
+            };
+            var tmp = new List<SubRel>();
+            if ((dgRel.ItemsSource as List<SubRel>).Count == dgRel.SelectedIndex+1)
+            {
+                //重新替换数据源
+                for (int i = 0; i < (dgRel.DataContext as List<SubRel>).Count-1; i++)
+                {
+                    tmp.Add(new SubRel()
+                    {
+                        //CompCode =(string) x.CompCode.Clone(),
+                        InData = (string)(dgRel.DataContext as List<SubRel>)[i].InData.Clone(),
+                        InType = (dgRel.DataContext as List<SubRel>)[i].InType,
+                        Memo = (string)(dgRel.DataContext as List<SubRel>)[i].Memo.Clone(),
+                        OutData = (string)(dgRel.DataContext as List<SubRel>)[i].OutData.Clone(),
+                        //SerialNumber = (string)x.SerialNumber.Clone(),
+                        //TradeCode = (string)x.TradeCode.Clone()
+                    });
+                }
+                (dgRel.DataContext as List<SubRel>).ForEach(x =>
+                {
+                    
+                    tmp.Add(new SubRel()
+                    {
+                        //CompCode =(string) x.CompCode.Clone(),
+                        InData = (string)x.InData.Clone(),
+                        InType = x.InType,
+                        Memo = (string)x.Memo.Clone(),
+                        OutData = (string)x.OutData.Clone(),
+                        //SerialNumber = (string)x.SerialNumber.Clone(),
+                        //TradeCode = (string)x.TradeCode.Clone()
+                    });
+                });
 
+                dgRel.ItemsSource = null;
+                dgRel.ItemsSource = tmp;
+                dgRel.Items.Refresh();
+            }
+            else
+            {
+
+           
             (dgRel.DataContext as List<SubRel>).RemoveAt(dgRel.SelectedIndex);
-            var tmp =new List<SubRel>();
+           // var tmp =new List<SubRel>();
             (dgRel.DataContext as List<SubRel>).ForEach(x =>
             {
                 tmp.Add(new SubRel()
@@ -153,17 +197,13 @@ namespace DesignerCanvas.Controls
                     //TradeCode = (string)x.TradeCode.Clone()
                 });
             });
-                //TODO 异常
-                dgRel.ItemsSource = null;
-            //(dgRel.DataContext as List<SubRel>).Clear();
 
+            dgRel.ItemsSource = null;
             dgRel.ItemsSource = tmp;
             dgRel.Items.Refresh();
-            
-                //var tmp= dgRel.CancelEdit(DataGridEditingUnit.Row);
-                //dgRel.Items.Refresh();
-
             }
+
+        }
 
         private void dgRel_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
