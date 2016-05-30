@@ -212,44 +212,7 @@ namespace FlowChart
                 }
             }
         }
-        private List<string> _brach = new List<string>();
-        /// <summary>
-        /// 分支的数据
-        /// </summary>
-        public List<string> Brach
-        {
-            get
-            {
-                return _brach;
-            }
-            set
-            {
-                if (_brach != value)
-                {
-                    _brach = value;
-                    OnPropertyChanged("Brach");
-                }
-            }
-        }
-        private string _selectedBrach = "";
-        /// <summary>
-        /// 分支的数据
-        /// </summary>
-        public string SelectedBrach
-        {
-            get
-            {
-                return _selectedBrach;
-            }
-            set
-            {
-                if (_selectedBrach != value)
-                {
-                    _selectedBrach = value;
-                    OnPropertyChanged("SelectedBrach");
-                }
-            }
-        }
+
         /// <summary>
         /// 线条之间的距离，是用来勾勒的连接路径模式
         /// </summary>
@@ -309,12 +272,10 @@ namespace FlowChart
         #endregion
 
         #region 构造函数
-        public Connection(Connector source, Connector sink, string strContent, List<string> m_Connection)
+        public Connection(Connector source, Connector sink)
         {
             Source = source;
             Sink = sink;
-            Brach = m_Connection;
-            SelectedBrach = strContent;
             base.Loaded += new RoutedEventHandler(Connection_Loaded);
             base.Unloaded += new RoutedEventHandler(Connection_Unloaded);
         }
@@ -322,7 +283,6 @@ namespace FlowChart
         {
             Source = source;
             Sink = sink;
-            Brach = m_Connection;
             base.Loaded += new RoutedEventHandler(Connection_Loaded);
             base.Unloaded += new RoutedEventHandler(Connection_Unloaded);
         }

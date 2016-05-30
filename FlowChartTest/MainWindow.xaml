@@ -7,7 +7,12 @@
         xmlns:controls="clr-namespace:FlowChart;assembly=FlowChart"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <ResourceDictionary Source="/FlowChart;component/Resources/Generic.xaml" />
+    </Window.Resources>
     <Grid>
-        <controls:FlowCanvas/>
+        <controls:FlowCanvas>
+            <controls:FlowItem Content="111"/>
+        </controls:FlowCanvas>
     </Grid>
 </Window>
