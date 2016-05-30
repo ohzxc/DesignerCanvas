@@ -169,7 +169,7 @@
                    Height="25"
                    Margin="192,21,0,0"
                    HorizontalAlignment="Left"
-                   VerticalAlignment="Top" />
+                   VerticalAlignment="Top" Foreground="#FFD5D5D5" />
         
     </Grid>
 </Window>

@@ -136,12 +136,14 @@ namespace DesignerCanvas.Controls
 
         private void button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (dgRel.Items.Count <= 1 || (dgRel.ItemsSource as List<SubRel>).Count < dgRel.SelectedIndex + 1) return;
             if (dgRel.SelectedIndex < 0)
             {
-                MessageBox.Show("请写选中某一行再进行删除操作。");
+                MessageBox.Show("请先选中某一行再进行删除操作。");
                 return;
             };
+
+            if (dgRel.Items.Count <= 1 || (dgRel.ItemsSource as List<SubRel>).Count < dgRel.SelectedIndex + 1) return;
+            
             var tmp = new List<SubRel>();
             if ((dgRel.ItemsSource as List<SubRel>).Count == dgRel.SelectedIndex+1)
             {
