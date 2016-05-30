@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using FlowChart.Interfaces;
@@ -56,6 +52,8 @@ namespace FlowChart
                 throw new NotImplementedException();
             }
         }
+
+        public bool IsDragConnectionOver { get; internal set; }
 
         #region 实现INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
