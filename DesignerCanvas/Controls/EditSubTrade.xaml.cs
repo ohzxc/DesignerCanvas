@@ -144,7 +144,7 @@ namespace DesignerCanvas.Controls
 
             if (dgRel.Items.Count <= 1 || (dgRel.ItemsSource as List<SubRel>).Count < dgRel.SelectedIndex + 1) return;
             
-            var tmp = new List<SubRel>();
+            var tmp = new List<SubRel>(); 
             if ((dgRel.ItemsSource as List<SubRel>).Count == dgRel.SelectedIndex+1)
             {
                 //重新替换数据源
