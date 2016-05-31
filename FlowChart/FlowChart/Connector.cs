@@ -11,13 +11,12 @@ namespace FlowChart
 {
     public class Connector : Control, INotifyPropertyChanged
     {
-        #region 属性
-        // 在设计容器拖拽的起始位置
+        // drag start point, relative to the DesignerCanvas
         private Point? dragStartPoint = null;
 
         public ConnectorOrientation Orientation { get; set; }
 
-        //相对于DesignerCanvas的中心位置
+        // center position of this Connector relative to the DesignerCanvas
         private Point position;
         public Point Position
         {
@@ -31,20 +30,23 @@ namespace FlowChart
                 }
             }
         }
-        //设置designeritem模板
-        private FlowItem parentFlowItem;
-        public FlowItem ParentFlowItem
+
+        // the DesignerItem this Connector belongs to;
+        // retrieved from DataContext, which is set in the
+        // DesignerItem template
+        private DesignerItem parentDesignerItem;
+        public DesignerItem ParentDesignerItem
         {
             get
             {
-                if (parentFlowItem == null)
-                    parentFlowItem = this.DataContext as FlowItem;
+                if (parentDesignerItem == null)
+                    parentDesignerItem = this.DataContext as DesignerItem;
 
-                return parentFlowItem;
+                return parentDesignerItem;
             }
         }
 
-        //连接线条集合
+        // keep track of connections that link to this connector
         private List<Connection> connections;
         public List<Connection> Connections
         {
@@ -55,59 +57,55 @@ namespace FlowChart
                 return connections;
             }
         }
-        #endregion
 
         public Connector()
         {
+            // fired when layout changes
             base.LayoutUpdated += new EventHandler(Connector_LayoutUpdated);
         }
 
-        // 当布局更改时更行相对位置
+        // when the layout changes we update the position property
         void Connector_LayoutUpdated(object sender, EventArgs e)
         {
-            FlowCanvas designer = GetDesignerCanvas(this);
+            DesignerCanvas designer = GetDesignerCanvas(this);
             if (designer != null)
             {
+                //get centre position of this Connector relative to the DesignerCanvas
                 this.Position = this.TransformToAncestor(designer).Transform(new Point(this.Width / 2, this.Height / 2));
             }
-
-
         }
-        /// <summary>
-        /// 鼠标单击事件
-        /// </summary>
-        /// <param name="e"></param>
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
-
-            FlowCanvas canvas = GetDesignerCanvas(this);
+            DesignerCanvas canvas = GetDesignerCanvas(this);
             if (canvas != null)
             {
-                // 相对于DesignerCanvas的位置
+                // position relative to DesignerCanvas
                 this.dragStartPoint = new Point?(e.GetPosition(canvas));
                 e.Handled = true;
             }
         }
-        /// <summary>
-        /// 鼠标移动事件
-        /// </summary>
-        /// <param name="e"></param>
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+
+            // if mouse button is not pressed we have no drag operation, ...
             if (e.LeftButton != MouseButtonState.Pressed)
                 this.dragStartPoint = null;
+
+            // but if mouse button is pressed and start point value is set we do have one
             if (this.dragStartPoint.HasValue)
             {
-                //创建连接装饰器 
-                var canvas = GetDesignerCanvas(this);
+                // create connection adorner 
+                DesignerCanvas canvas = GetDesignerCanvas(this);
                 if (canvas != null)
                 {
                     AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
                     if (adornerLayer != null)
                     {
-                        var adorner = new ConnectorAdorner(canvas, this);
+                        ConnectorAdorner adorner = new ConnectorAdorner(canvas, this);
                         if (adorner != null)
                         {
                             adornerLayer.Add(adorner);
@@ -121,25 +119,21 @@ namespace FlowChart
         internal ConnectorInfo GetInfo()
         {
             ConnectorInfo info = new ConnectorInfo();
-            info.DesignerItemLeft = FlowCanvas.GetLeft(this.ParentFlowItem);
-            info.DesignerItemTop = FlowCanvas.GetTop(this.ParentFlowItem);
-            info.DesignerItemSize = new Size(this.ParentFlowItem.ActualWidth, this.ParentFlowItem.ActualHeight);
+            info.DesignerItemLeft = DesignerCanvas.GetLeft(this.ParentDesignerItem);
+            info.DesignerItemTop = DesignerCanvas.GetTop(this.ParentDesignerItem);
+            info.DesignerItemSize = new Size(this.ParentDesignerItem.ActualWidth, this.ParentDesignerItem.ActualHeight);
             info.Orientation = this.Orientation;
             info.Position = this.Position;
             return info;
         }
 
-        /// <summary>
-        /// 迭代通过视觉树查找父designercanvas容器中元素
-        /// </summary>
-        /// <param name="element"></param>
-        /// <returns></returns>
-        private FlowCanvas GetDesignerCanvas(DependencyObject element)
+        // iterate through visual tree to get parent DesignerCanvas
+        private DesignerCanvas GetDesignerCanvas(DependencyObject element)
         {
-            while (element != null && !(element is FlowCanvas))
+            while (element != null && !(element is DesignerCanvas))
                 element = VisualTreeHelper.GetParent(element);
 
-            return element as FlowCanvas;
+            return element as DesignerCanvas;
         }
 
         #region INotifyPropertyChanged Members
@@ -158,9 +152,8 @@ namespace FlowChart
         #endregion
     }
 
-    /// <summary>
-    /// 定义一个连接器结构
-    /// </summary>
+    // provides compact info about a connector; used for the 
+    // routing algorithm, instead of hand over a full fledged Connector
     internal struct ConnectorInfo
     {
         public double DesignerItemLeft { get; set; }
@@ -169,9 +162,7 @@ namespace FlowChart
         public Point Position { get; set; }
         public ConnectorOrientation Orientation { get; set; }
     }
-    /// <summary>
-    /// 连接线枚举
-    /// </summary>
+
     public enum ConnectorOrientation
     {
         None,

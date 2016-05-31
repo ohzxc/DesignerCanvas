@@ -11,7 +11,7 @@ namespace FlowChart
 {
     public class ConnectionAdorner : Adorner
     {
-        private FlowCanvas designerCanvas;
+        private DesignerCanvas designerCanvas;
         private Canvas adornerCanvas;
         private Connection connection;
         private PathGeometry pathGeometry;
@@ -19,8 +19,8 @@ namespace FlowChart
         private Thumb sourceDragThumb, sinkDragThumb;
         private Pen drawingPen;
 
-        private FlowItem hitDesignerItem;
-        private FlowItem HitDesignerItem
+        private DesignerItem hitDesignerItem;
+        private DesignerItem HitDesignerItem
         {
             get { return hitDesignerItem; }
             set
@@ -65,7 +65,7 @@ namespace FlowChart
             return this.visualChildren[index];
         }
 
-        public ConnectionAdorner(FlowCanvas designer, Connection connection)
+        public ConnectionAdorner(DesignerCanvas designer, Connection connection)
             : base(designer)
         {
             this.designerCanvas = designer;
@@ -86,7 +86,7 @@ namespace FlowChart
         {
             Style dragThumbStyle = connection.FindResource("ConnectionAdornerThumbStyle") as Style;
 
-            //原元素拖拽
+            //source drag thumb
             sourceDragThumb = new Thumb();
             Canvas.SetLeft(sourceDragThumb, connection.AnchorPositionSource.X);
             Canvas.SetTop(sourceDragThumb, connection.AnchorPositionSource.Y);
@@ -98,7 +98,7 @@ namespace FlowChart
             sourceDragThumb.DragStarted += new DragStartedEventHandler(thumbDragThumb_DragStarted);
             sourceDragThumb.DragCompleted += new DragCompletedEventHandler(thumbDragThumb_DragCompleted);
 
-            // 目标元素拖拽
+            // sink drag thumb
             sinkDragThumb = new Thumb();
             Canvas.SetLeft(sinkDragThumb, connection.AnchorPositionSink.X);
             Canvas.SetTop(sinkDragThumb, connection.AnchorPositionSink.Y);
@@ -124,11 +124,7 @@ namespace FlowChart
                 Canvas.SetTop(sinkDragThumb, connection.AnchorPositionSink.Y);
             }
         }
-        /// <summary>
-        /// 拖拽完成
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
         void thumbDragThumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             if (HitConnector != null)
@@ -148,11 +144,7 @@ namespace FlowChart
             this.connection.StrokeDashArray = null;
             this.InvalidateVisual();
         }
-        /// <summary>
-        /// 拖拽开始
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
         void thumbDragThumb_DragStarted(object sender, DragStartedEventArgs e)
         {
             this.HitDesignerItem = null;
@@ -172,11 +164,7 @@ namespace FlowChart
                 fixConnector = connection.Source;
             }
         }
-        /// <summary>
-        /// 拖拽
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
         void thumbDragThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             Point currentPosition = Mouse.GetPosition(this);
@@ -196,38 +184,39 @@ namespace FlowChart
             adornerCanvas.Arrange(new Rect(0, 0, this.designerCanvas.ActualWidth, this.designerCanvas.ActualHeight));
             return finalSize;
         }
-        /// <summary>
-        /// 更新线的位置
-        /// </summary>
-        /// <param name="position">点坐标</param>
-        /// <returns>返回一段弧形或曲线或椭圆</returns>
+
         private PathGeometry UpdatePathGeometry(Point position)
         {
             PathGeometry geometry = new PathGeometry();
+
             ConnectorOrientation targetOrientation;
             if (HitConnector != null)
                 targetOrientation = HitConnector.Orientation;
             else
                 targetOrientation = dragConnector.Orientation;
+
             List<Point> linePoints = PathFinder.GetConnectionLine(fixConnector.GetInfo(), position, targetOrientation);
+
             if (linePoints.Count > 0)
             {
                 PathFigure figure = new PathFigure();
                 figure.StartPoint = linePoints[0];
                 linePoints.Remove(linePoints[0]);
-                figure.Segments.Add(new LineSegment(position, true));
+                figure.Segments.Add(new PolyLineSegment(linePoints, true));
                 geometry.Figures.Add(figure);
             }
+
             return geometry;
         }
 
         private void HitTesting(Point hitPoint)
         {
             bool hitConnectorFlag = false;
+
             DependencyObject hitObject = designerCanvas.InputHitTest(hitPoint) as DependencyObject;
             while (hitObject != null &&
-                   hitObject != fixConnector.ParentFlowItem &&
-                   hitObject.GetType() != typeof(FlowCanvas))
+                   hitObject != fixConnector.ParentDesignerItem &&
+                   hitObject.GetType() != typeof(DesignerCanvas))
             {
                 if (hitObject is Connector)
                 {
@@ -235,9 +224,9 @@ namespace FlowChart
                     hitConnectorFlag = true;
                 }
 
-                if (hitObject is FlowItem)
+                if (hitObject is DesignerItem)
                 {
-                    HitDesignerItem = hitObject as FlowItem;
+                    HitDesignerItem = hitObject as DesignerItem;
                     if (!hitConnectorFlag)
                         HitConnector = null;
                     return;

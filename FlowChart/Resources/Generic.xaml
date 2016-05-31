@@ -1,6 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FlowChart;component/Resources/FlowItem.xaml" /> 
+
+        <ResourceDictionary Source="/FlowChart;component/Resources/DesignerItem.xaml" />
+        <ResourceDictionary Source="/FlowChart;component/Resources/NodeControlStyles.xaml" />
+        <ResourceDictionary Source="/FlowChart;component/Resources/Connection.xaml" />
 
 
     </ResourceDictionary.MergedDictionaries>

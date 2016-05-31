@@ -11,8 +11,7 @@
         <ResourceDictionary Source="/FlowChart;component/Resources/Generic.xaml" />
     </Window.Resources>
     <Grid>
-        <controls:FlowCanvas>
-            <controls:FlowItem Content="111"/>
-        </controls:FlowCanvas>
+        <controls:DesignerCanvas x:Name="flowChart">
+        </controls:DesignerCanvas>
     </Grid>
 </Window>

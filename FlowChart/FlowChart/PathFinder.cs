@@ -4,21 +4,11 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace FlowChart
-{
+{   
     internal class PathFinder
     {
-        /// <summary>
-        /// 线条偏移量
-        /// </summary>
         private const int margin = 20;
 
-        /// <summary>
-        /// 获取线条-重载方法
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="sink"></param>
-        /// <param name="showLastLine"></param>
-        /// <returns></returns>
         internal static List<Point> GetConnectionLine(ConnectorInfo source, ConnectorInfo sink, bool showLastLine)
         {
             List<Point> linePoints = new List<Point>();
@@ -94,10 +84,10 @@ namespace FlowChart
 
                     #region sink node
 
-                    else
+                    else // from here on we jump to the sink node
                     {
-                        Point n1, n2;
-                        Point s1, s2;
+                        Point n1, n2; // neighbour corner
+                        Point s1, s2; // opposite corner
                         GetNeighborCorners(sink.Orientation, rectSink, out s1, out s2);
                         GetOppositeCorners(sink.Orientation, rectSink, out n1, out n2);
 
@@ -208,14 +198,8 @@ namespace FlowChart
 
             CheckPathEnd(source, sink, showLastLine, linePoints);
             return linePoints;
-        }
-        /// <summary>
-        /// 获取线条-重载方法
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="sinkPoint"></param>
-        /// <param name="preferredOrientation"></param>
-        /// <returns></returns>
+        }        
+
         internal static List<Point> GetConnectionLine(ConnectorInfo source, Point sinkPoint, ConnectorOrientation preferredOrientation)
         {
             List<Point> linePoints = new List<Point>();
@@ -356,12 +340,7 @@ namespace FlowChart
 
             return points;
         }
-        /// <summary>
-        /// 根据两点确定一个线-重载方法
-        /// </summary>
-        /// <param name="p1">第一个坐标点</param>
-        /// <param name="p2">第二个坐标点</param>
-        /// <returns></returns>
+
         private static ConnectorOrientation GetOrientation(Point p1, Point p2)
         {
             if (p1.X == p2.X)
@@ -380,11 +359,7 @@ namespace FlowChart
             }
             throw new Exception("Failed to retrieve orientation");
         }
-        /// <summary>
-        /// 根据线条远确定布局方式
-        /// </summary>
-        /// <param name="sourceOrientation"></param>
-        /// <returns></returns>
+
         private static Orientation GetOrientation(ConnectorOrientation sourceOrientation)
         {
             switch (sourceOrientation)
@@ -401,18 +376,10 @@ namespace FlowChart
                     throw new Exception("Unknown ConnectorOrientation");
             }
         }
-        /// <summary>
-        /// 原目标，根据线条的走向获取最近的连接点-重载方法
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="endPoint"></param>
-        /// <param name="rectSource"></param>
-        /// <param name="rectSink"></param>
-        /// <param name="flag"></param>
-        /// <returns></returns>
+
         private static Point GetNearestNeighborSource(ConnectorInfo source, Point endPoint, Rect rectSource, Rect rectSink, out bool flag)
         {
-            Point n1, n2;
+            Point n1, n2; // neighbors
             GetNeighborCorners(source.Orientation, rectSource, out n1, out n2);
 
             if (rectSink.Contains(n1))
@@ -438,15 +405,8 @@ namespace FlowChart
                 return n2;
             }
         }
-        /// <summary>
-        /// 原目标，根据线条的走向获取最近的连接点-重载方法
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="endPoint"></param>
-        /// <param name="rectSource"></param>
-        /// <param name="flag"></param>
-        /// <returns></returns>
-        public static Point GetNearestNeighborSource(ConnectorInfo source, Point endPoint, Rect rectSource, out bool flag)
+
+        private static Point GetNearestNeighborSource(ConnectorInfo source, Point endPoint, Rect rectSource, out bool flag)
         {
             Point n1, n2; // neighbors
             GetNeighborCorners(source.Orientation, rectSource, out n1, out n2);
@@ -462,26 +422,18 @@ namespace FlowChart
                 return n2;
             }
         }
-        /// <summary>
-        /// 到达目标，根据线条的走向获取最近的连接点-重载方法
-        /// </summary>
-        /// <param name="currentPoint"></param>
-        /// <param name="endPoint"></param>
-        /// <param name="sink"></param>
-        /// <param name="rectSource"></param>
-        /// <param name="rectSink"></param>
-        /// <returns></returns>
+
         private static Point GetNearestVisibleNeighborSink(Point currentPoint, Point endPoint, ConnectorInfo sink, Rect rectSource, Rect rectSink)
         {
-            Point s1, s2;
+            Point s1, s2; // neighbors on sink side
             GetNeighborCorners(sink.Orientation, rectSink, out s1, out s2);
 
             bool flag1 = IsPointVisible(currentPoint, s1, new Rect[] { rectSource, rectSink });
             bool flag2 = IsPointVisible(currentPoint, s2, new Rect[] { rectSource, rectSink });
 
-            if (flag1)
+            if (flag1) // s1 visible
             {
-                if (flag2)
+                if (flag2) // s1 and s2 visible
                 {
                     if (rectSink.Contains(s1))
                         return s2;
@@ -500,13 +452,13 @@ namespace FlowChart
                     return s1;
                 }
             }
-            else
+            else // s1 not visible
             {
-                if (flag2)
+                if (flag2) // only s2 visible
                 {
                     return s2;
                 }
-                else
+                else // s1 and s2 not visible
                 {
                     return new Point(double.NaN, double.NaN);
                 }
@@ -593,7 +545,7 @@ namespace FlowChart
             return Point.Subtract(p1, p2).Length;
         }
 
-        public static Rect GetRectWithMargin(ConnectorInfo connectorThumb, double margin)
+        private static Rect GetRectWithMargin(ConnectorInfo connectorThumb, double margin)
         {
             Rect rect = new Rect(connectorThumb.DesignerItemLeft,
                                  connectorThumb.DesignerItemTop,
@@ -629,13 +581,7 @@ namespace FlowChart
 
             return offsetPoint;
         }
-        /// <summary>
-        /// 检查线条是否结束
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="sink"></param>
-        /// <param name="showLastLine"></param>
-        /// <param name="linePoints"></param>
+
         private static void CheckPathEnd(ConnectorInfo source, ConnectorInfo sink, bool showLastLine, List<Point> linePoints)
         {
             if (showLastLine)
@@ -652,10 +598,10 @@ namespace FlowChart
                         startPoint = new Point(source.Position.X, source.Position.Y - marginPath);
                         break;
                     case ConnectorOrientation.Right:
-                        startPoint = new Point(source.Position.X + marginPath - 10, source.Position.Y);
+                        startPoint = new Point(source.Position.X + marginPath, source.Position.Y);
                         break;
                     case ConnectorOrientation.Bottom:
-                        startPoint = new Point(source.Position.X, source.Position.Y + 3);
+                        startPoint = new Point(source.Position.X, source.Position.Y + marginPath);
                         break;
                     default:
                         break;
@@ -667,13 +613,13 @@ namespace FlowChart
                         endPoint = new Point(sink.Position.X - marginPath, sink.Position.Y);
                         break;
                     case ConnectorOrientation.Top:
-                        endPoint = new Point(sink.Position.X, sink.Position.Y - marginPath + 5);
+                        endPoint = new Point(sink.Position.X, sink.Position.Y - marginPath);
                         break;
                     case ConnectorOrientation.Right:
-                        endPoint = new Point(sink.Position.X + marginPath - 7, sink.Position.Y);
+                        endPoint = new Point(sink.Position.X + marginPath, sink.Position.Y);
                         break;
                     case ConnectorOrientation.Bottom:
-                        endPoint = new Point(sink.Position.X, sink.Position.Y + marginPath + 3);
+                        endPoint = new Point(sink.Position.X, sink.Position.Y + marginPath);
                         break;
                     default:
                         break;

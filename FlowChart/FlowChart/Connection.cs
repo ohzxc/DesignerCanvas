@@ -6,23 +6,16 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using FlowChart.Interfaces;
 
 namespace FlowChart
 {
-    public class Connection : Control, ISelectable, INotifyPropertyChanged
+    public class Connection : Control, INotifyPropertyChanged
     {
-        #region 字段
-        /// <summary>
-        /// 定义连接线装饰器
-        /// </summary>
         private Adorner connectionAdorner;
-        #endregion
 
-        #region 属性
-        /// <summary>
-        /// 定义source源
-        /// </summary>
+        #region Properties
+
+        // source connector
         private Connector source;
         public Connector Source
         {
@@ -53,9 +46,7 @@ namespace FlowChart
             }
         }
 
-        /// <summary>
-        /// 定义sink
-        /// </summary>
+        // sink connector
         private Connector sink;
         public Connector Sink
         {
@@ -82,7 +73,7 @@ namespace FlowChart
             }
         }
 
-        //定义一个画弧形的对象
+        // connection path geometry
         private PathGeometry pathGeometry;
         public PathGeometry PathGeometry
         {
@@ -98,9 +89,10 @@ namespace FlowChart
             }
         }
 
-        /// <summary>
-        /// 定义开始点和结束点之间的位置
-        /// </summary>
+        // between source connector position and the beginning 
+        // of the path geometry we leave some space for visual reasons; 
+        // so the anchor position source really marks the beginning 
+        // of the path geometry on the source side
         private Point anchorPositionSource;
         public Point AnchorPositionSource
         {
@@ -115,10 +107,8 @@ namespace FlowChart
             }
         }
 
-        /// <summary>
-        /// 在固定位置的路径
-        /// 箭头旋转角度
-        /// </summary>
+        // slope of the path at the anchor position
+        // needed for the rotation angle of the arrow
         private double anchorAngleSource = 0;
         public double AnchorAngleSource
         {
@@ -133,9 +123,7 @@ namespace FlowChart
             }
         }
 
-        /// <summary>
-        /// 线条的影
-        /// </summary>
+        // analogue to source side
         private Point anchorPositionSink;
         public Point AnchorPositionSink
         {
@@ -149,9 +137,7 @@ namespace FlowChart
                 }
             }
         }
-        /// <summary>
-        /// 线条的投影源
-        /// </summary>
+        // analogue to source side
         private double anchorAngleSink = 0;
         public double AnchorAngleSink
         {
@@ -165,9 +151,7 @@ namespace FlowChart
                 }
             }
         }
-        /// <summary>
-        /// 投影箭头的枚举
-        /// </summary>
+
         private ArrowSymbol sourceArrowSymbol = ArrowSymbol.None;
         public ArrowSymbol SourceArrowSymbol
         {
@@ -181,9 +165,7 @@ namespace FlowChart
                 }
             }
         }
-        /// <summary>
-        /// 箭头的枚举
-        /// </summary>
+
         public ArrowSymbol sinkArrowSymbol = ArrowSymbol.Arrow;
         public ArrowSymbol SinkArrowSymbol
         {
@@ -198,7 +180,7 @@ namespace FlowChart
             }
         }
 
-        // 在线条上定义一个文本框
+        // specifies a point at half path length
         private Point labelPosition;
         public Point LabelPosition
         {
@@ -213,9 +195,7 @@ namespace FlowChart
             }
         }
 
-        /// <summary>
-        /// 线条之间的距离，是用来勾勒的连接路径模式
-        /// </summary>
+        // pattern of dashes and gaps that is used to outline the connection path
         private DoubleCollection strokeDashArray;
         public DoubleCollection StrokeDashArray
         {
@@ -232,7 +212,27 @@ namespace FlowChart
                 }
             }
         }
-        //如果连接上,ConnectionAdorner变得可见
+
+        private string _brach = "";
+        /// <summary>
+        /// 分支的值
+        /// </summary>
+        public string Brach
+        {
+            get
+            {
+                return _brach;
+            }
+            set
+            {
+                if (_brach != value)
+                {
+                    _brach = value;
+                    OnPropertyChanged("Brach");
+                }
+            }
+        }
+        // if connected, the ConnectionAdorner becomes visible
         private bool isSelected;
         public bool IsSelected
         {
@@ -250,68 +250,35 @@ namespace FlowChart
                 }
             }
         }
-        //public List<SubRel> _subRelList = null;
-        ///// <summary>
-        ///// 映射关系集合
-        ///// </summary>
-        //public List<SubRel> SubRelList
-        //{
-        //    get
-        //    {
-        //        if (_subRelList == null)
-        //        {
-        //            _subRelList = new List<SubRel>();
-        //        }
-        //        return _subRelList;
-        //    }
-        //    set
-        //    {
-        //        _subRelList = value;
-        //    }
-        //}
+
         #endregion
 
-        #region 构造函数
-        public Connection(Connector source, Connector sink)
+        public Connection(Connector source, Connector sink,string strContent = "")
         {
-            Source = source;
-            Sink = sink;
-            base.Loaded += new RoutedEventHandler(Connection_Loaded);
+            this.Source = source;
+            this.Sink = sink;
+            Brach = strContent;
             base.Unloaded += new RoutedEventHandler(Connection_Unloaded);
         }
-        public Connection(Connector source, Connector sink, List<string> m_Connection)
-        {
-            Source = source;
-            Sink = sink;
-            base.Loaded += new RoutedEventHandler(Connection_Loaded);
-            base.Unloaded += new RoutedEventHandler(Connection_Unloaded);
-        }
-        #endregion
 
-        /// <summary>
-        /// 鼠标单击的事件
-        /// </summary>
-        /// <param name="e"></param>
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
-            var designer = VisualTreeHelper.GetParent(this) as FlowCanvas;
-            // designer.Focus();
+
+            // usual selection business
+            DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
             if (designer != null)
-            {
                 if ((Keyboard.Modifiers & (ModifierKeys.Shift | ModifierKeys.Control)) != ModifierKeys.None)
-                {
                     if (this.IsSelected)
                     {
                         this.IsSelected = false;
-                        designer.SelectedItems.Remove(this);
+                       // designer.SelectedItems.Remove(this);
                     }
                     else
                     {
                         this.IsSelected = true;
-                        designer.SelectedItems.Add(this);
+                       // designer.SelectedItems.Add(this);
                     }
-                }
                 else if (!this.IsSelected)
                 {
                     foreach (ISelectable item in designer.SelectedItems)
@@ -319,22 +286,15 @@ namespace FlowChart
 
                     designer.SelectedItems.Clear();
                     this.IsSelected = true;
-                    designer.SelectedItems.Add(this);
+                    //designer.SelectedItems.Add(this);
                 }
-            }
             e.Handled = false;
-        }
-        protected override void OnMouseEnter(MouseEventArgs e)
-        {
-            base.OnMouseEnter(e);
-            //this.ToolTip = "双击线条开始配置映射";
-            e.Handled = false;
-
         }
 
         void OnConnectorPositionChanged(object sender, PropertyChangedEventArgs e)
         {
-            //当线条位置改变后，必须更新相应的位置
+            // whenever the 'Position' property of the source or sink Connector 
+            // changes we must update the connection path geometry
             if (e.PropertyName.Equals("Position"))
             {
                 UpdatePathGeometry();
@@ -352,7 +312,7 @@ namespace FlowChart
                     PathFigure figure = new PathFigure();
                     figure.StartPoint = linePoints[0];
                     linePoints.Remove(linePoints[0]);
-                    figure.Segments.Add(new LineSegment(sink.Position, true));
+                    figure.Segments.Add(new PolyLineSegment(linePoints, true));
                     geometry.Figures.Add(figure);
 
                     this.PathGeometry = geometry;
@@ -362,7 +322,6 @@ namespace FlowChart
 
         private void UpdateAnchorPosition()
         {
-
             Point pathStartPoint, pathTangentAtStartPoint;
             Point pathEndPoint, pathTangentAtEndPoint;
             Point pathMidPoint, pathTangentAtMidPoint;
@@ -371,27 +330,27 @@ namespace FlowChart
             // on PathGeometry at the specified fraction of its length
             this.PathGeometry.GetPointAtFractionLength(0, out pathStartPoint, out pathTangentAtStartPoint);
             this.PathGeometry.GetPointAtFractionLength(1, out pathEndPoint, out pathTangentAtEndPoint);
-            this.PathGeometry.GetPointAtFractionLength(0.7, out pathMidPoint, out pathTangentAtMidPoint);
+            this.PathGeometry.GetPointAtFractionLength(0.5, out pathMidPoint, out pathTangentAtMidPoint);
 
             // get angle from tangent vector
             this.AnchorAngleSource = Math.Atan2(-pathTangentAtStartPoint.Y, -pathTangentAtStartPoint.X) * (180 / Math.PI);
             this.AnchorAngleSink = Math.Atan2(pathTangentAtEndPoint.Y, pathTangentAtEndPoint.X) * (180 / Math.PI);
 
             // add some margin on source and sink side for visual reasons only
-            pathStartPoint.Offset(-pathTangentAtStartPoint.X * 2, -pathTangentAtStartPoint.Y * 2);
+            pathStartPoint.Offset(-pathTangentAtStartPoint.X * 5, -pathTangentAtStartPoint.Y * 5);
             pathEndPoint.Offset(pathTangentAtEndPoint.X * 5, pathTangentAtEndPoint.Y * 5);
 
             this.AnchorPositionSource = pathStartPoint;
             this.AnchorPositionSink = pathEndPoint;
-            this.LabelPosition = new Point(pathMidPoint.X - 25, pathMidPoint.Y);
+            this.LabelPosition = pathMidPoint;
         }
 
         private void ShowAdorner()
         {
-            //创建一个ConnectionAdorner装饰器
+            // the ConnectionAdorner is created once for each Connection
             if (this.connectionAdorner == null)
             {
-                var designer = VisualTreeHelper.GetParent(this) as FlowCanvas;
+                DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
 
                 AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(designer);
                 if (adornerLayer != null)
@@ -402,48 +361,26 @@ namespace FlowChart
             }
             this.connectionAdorner.Visibility = Visibility.Visible;
         }
-        /// <summary>
-        /// 隐藏装饰器
-        /// </summary>
+
         internal void HideAdorner()
         {
             if (this.connectionAdorner != null)
                 this.connectionAdorner.Visibility = Visibility.Collapsed;
         }
-        void Connection_Loaded(object sender, RoutedEventArgs e)
-        {
-            source.PropertyChanged += new PropertyChangedEventHandler(OnConnectorPositionChanged);
-            sink.PropertyChanged += new PropertyChangedEventHandler(OnConnectorPositionChanged);
-            // remove adorner
-            if (this.connectionAdorner != null)
-            {
-                var  designer = VisualTreeHelper.GetParent(this) as FlowCanvas;
-                if (designer == null)
-                    return;
-                AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(designer);
-                if (adornerLayer != null)
-                {
-                    adornerLayer.Add(this.connectionAdorner);
-                    this.connectionAdorner = null;
-                }
-            }
-        }
-        /// <summary>
-        /// 销毁线条
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
         void Connection_Unloaded(object sender, RoutedEventArgs e)
         {
+            // do some housekeeping when Connection is unloaded
 
+            // remove event handler
             source.PropertyChanged -= new PropertyChangedEventHandler(OnConnectorPositionChanged);
             sink.PropertyChanged -= new PropertyChangedEventHandler(OnConnectorPositionChanged);
+
             // remove adorner
             if (this.connectionAdorner != null)
             {
-                var designer = VisualTreeHelper.GetParent(this) as FlowCanvas;
-                if (designer == null)
-                    return;
+                DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
+
                 AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(designer);
                 if (adornerLayer != null)
                 {
@@ -453,20 +390,11 @@ namespace FlowChart
             }
         }
 
-        /// <summary>
-        /// 弹出映射关系界面
-        /// </summary>
-        /// <param name="tx_code">交易编号</param>
-        /// <param name="comp_code">组件编号</param>
-        /// <param name="serialnumber">序号</param>
-        /// <param name="serialnumber">数据域字典列表</param>
-        /// <param name="serialnumber">输入数据类型列表</param>
-        /// <param name="subRelList">映射关系列表</param>
-        /// <returns>SubRel列表</returns>
+        #region INotifyPropertyChanged Members
 
-
-        #region 实现INotifyPropertyChanged 成员
+        // we could use DependencyProperties as well to inform others of property changes
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -477,8 +405,6 @@ namespace FlowChart
         }
 
         #endregion
-
-
     }
 
     public enum ArrowSymbol

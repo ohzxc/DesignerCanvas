@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dhcc="http://www.dhcc.com.cn"
                     xmlns:s="clr-namespace:FlowChart">
-
     <!--  Connector Style  -->
     <Style TargetType="{x:Type s:Connector}">
         <Setter Property="Width" Value="8" />
@@ -12,7 +12,6 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type s:Connector}">
                     <Grid>
-                        <!--  transparent extra space makes connector easier to hit  -->
                         <Rectangle Margin="-2" Fill="Transparent" />
                         <Rectangle Fill="Lavender"
                                    Stroke="#AA000080"
@@ -21,11 +20,11 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>             
+    </Style>
 
     <!--  ConnectorDecoratorTemplate Default Template  -->
     <ControlTemplate x:Key="ConnectorDecoratorTemplate" TargetType="{x:Type Control}">
-        <Grid Margin="-6">
+        <Grid Margin="-5">
             <s:Connector x:Name="ConnectorLeftName"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
@@ -122,14 +121,14 @@
         </Setter>
     </Style>
 
-    <!--  FlowItem Style  -->
-    <Style TargetType="{x:Type s:FlowItem}">
+    <!--  DesignerItem Style  -->
+    <Style TargetType="{x:Type s:DesignerItem}">
         <Setter Property="MinWidth" Value="25" />
         <Setter Property="MinHeight" Value="25" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type s:FlowItem}">
+                <ControlTemplate TargetType="{x:Type s:DesignerItem}">
                     <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
                         <!--  PART_DragThumb  -->
                         <s:DragThumb x:Name="PART_DragThumb" Cursor="SizeAll" />
@@ -140,14 +139,22 @@
                         <!--  PART_ContentPresenter  -->
                         <ContentPresenter x:Name="PART_ContentPresenter"
                                           Margin="{TemplateBinding ContentControl.Padding}"
-                                          HorizontalAlignment="Left"
+                                          HorizontalAlignment="Stretch"
                                           VerticalAlignment="Stretch"
                                           Content="{TemplateBinding ContentControl.Content}" />
                         <!--  PART_ConnectorDecorator  -->
                         <Control x:Name="PART_ConnectorDecorator"
                                  Template="{StaticResource ConnectorDecoratorTemplate}"
                                  Visibility="Hidden" />
+                        <Image x:Name="DesignerItemTip"
+                               Width="15"
+                               Height="15"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Top"
+                               Stretch="UniformToFill"
+                               Visibility="Collapsed" />
                     </Grid>
+
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True">
                             <Setter TargetName="PART_ResizeDecorator" Property="Visibility" Value="Visible" />
@@ -155,17 +162,30 @@
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter TargetName="PART_ConnectorDecorator" Property="Visibility" Value="Visible" />
                         </Trigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsMouseOver" Value="True" />
-                                <Condition Property="IsDragConnectionOver" Value="True" />
-                            </MultiTrigger.Conditions>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="Error">
+                            <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Source" Value="{DynamicResource FlowChatError}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="Success">
+                            <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Source" Value="{DynamicResource FlowChatSuccess}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="UnHandled">
+                            <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Source" Value="{DynamicResource FlowChatUndo}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="Execute">
+                            <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Source" Value="{DynamicResource FlowChatExecute}" />
+                        </DataTrigger>
+                        <!--
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsDragConnectionOver}" Value="True">
                             <Setter TargetName="PART_ConnectorDecorator" Property="Visibility" Value="Visible" />
-                        </MultiTrigger>
+                            </DataTrigger>
+                        -->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
 </ResourceDictionary>

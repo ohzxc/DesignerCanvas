@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using FlowChart.Interfaces;
 
 namespace FlowChart
 {
@@ -13,26 +12,28 @@ namespace FlowChart
     {
         public ResizeThumb()
         {
-            DragDelta += new DragDeltaEventHandler(ResizeThumb_DragDelta);
+            base.DragDelta += new DragDeltaEventHandler(ResizeThumb_DragDelta);
         }
 
         void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            var designerItem = this.DataContext as FlowItem;
-            var designer = VisualTreeHelper.GetParent(designerItem) as FlowCanvas;
-
+            DesignerItem designerItem = this.DataContext as DesignerItem;
+            DesignerCanvas designer = VisualTreeHelper.GetParent(designerItem) as DesignerCanvas;
+            
             if (designerItem != null && designer != null && designerItem.IsSelected)
             {
                 double minLeft, minTop, minDeltaHorizontal, minDeltaVertical;
                 double dragDeltaVertical, dragDeltaHorizontal;
+
+                // only resize DesignerItems
                 var selectedDesignerItems = from item in designer.SelectedItems
-                                            where item is FlowItem
+                                            where item is DesignerItem
                                             select item;
 
-                CalculateDragLimits(selectedDesignerItems, out minLeft, out minTop,
-                                    out minDeltaHorizontal, out minDeltaVertical);
+                CalculateDragLimits(selectedDesignerItems, out minLeft, out minTop, 
+                                    out minDeltaHorizontal, out minDeltaVertical);               
 
-                foreach (FlowItem item in selectedDesignerItems)
+                foreach (DesignerItem item in selectedDesignerItems)
                 {
                     if (item != null)
                     {
@@ -72,14 +73,17 @@ namespace FlowChart
                 e.Handled = true;
             }
         }
-
+        
         private static void CalculateDragLimits(IEnumerable<ISelectable> selectedDesignerItems, out double minLeft, out double minTop, out double minDeltaHorizontal, out double minDeltaVertical)
         {
             minLeft = double.MaxValue;
             minTop = double.MaxValue;
             minDeltaHorizontal = double.MaxValue;
             minDeltaVertical = double.MaxValue;
-            foreach (FlowItem item in selectedDesignerItems)
+
+            // drag limits are set by these parameters: canvas top, canvas left, minHeight, minWidth
+            // calculate min value for each parameter for each item
+            foreach (DesignerItem item in selectedDesignerItems)
             {
                 double left = Canvas.GetLeft(item);
                 double top = Canvas.GetTop(item);
