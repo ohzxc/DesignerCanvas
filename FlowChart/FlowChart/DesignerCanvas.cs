@@ -344,13 +344,14 @@ namespace FlowChart
                 lstNode.ForEach(x =>
                 {
                     _allEntrys.Add(new Tx_Entry(x.Code, endNode, ""));//添加结束节点的连线
-                    x.Sub_Code += "," + _nodes[1].Code;//给开始节点的子节点属性赋值
+                    x.Sub_Code += "," + _nodes[1].Code;//给尾节点的子节点属性赋值
                 });
             //排序
             if (_nodes.Count < 1) return;
             var nodes = from n in _nodes                      
                         orderby int.Parse(n.Code) ascending
                         select n;
+            //头结点与开始的连线
             var firstNode = FindFirstNode(flowList);
             if (firstNode.Count > 0)
                 firstNode.ForEach(x =>
@@ -358,31 +359,13 @@ namespace FlowChart
                     _allEntrys.Add(new Tx_Entry(startNode, x.Code, ""));//添加开始节点的连线
                     _nodes[0].Sub_Code += "," + x.Code;//给开始节点的子节点属性赋值
                 });
+            //给开始结点确定位置
             _nodes[0].X = _startX;
             _nodes[0].Y = _startY;
             _layOutCount++;
             _countedNodes.Add(_nodes[0]);
+            //递归计算子节点位置
             LayOut_NextNodes(_nodes[0]);       
-            foreach (Tx_Node nextLayNode in nodes)
-            {
-                if (firstNode != null && firstNode.Count() > 0)
-                {
-                    //非起始子交易的头结点树的分布控制
-                    foreach (Tx_Node txNodeHaad in firstNode)
-                    {
-                        if (txNodeHaad.Code != nextLayNode.Code)
-                        {
-                            txNodeHaad.X = _startX + 100;
-                            txNodeHaad.Y = _startY;
-                            this._layOutCount++;
-                            if(!_countedNodes.Contains(txNodeHaad))
-                                _countedNodes.Add(txNodeHaad);
-                            this.LayOut_NextNodes(txNodeHaad);
-                        }
-                    }
-                }                
-                this.LayOut_NextNodes(nextLayNode);
-            }
         }
         /// <summary>
         /// 找出交易流程的所有头结点
