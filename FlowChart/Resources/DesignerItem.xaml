@@ -146,12 +146,11 @@
                         <Control x:Name="PART_ConnectorDecorator"
                                  Template="{StaticResource ConnectorDecoratorTemplate}"
                                  Visibility="Hidden" />
-                        <Image x:Name="DesignerItemTip"
-                               Width="15"
+                        <TextBlock x:Name="DesignerItemTip" 
                                Height="15"
                                HorizontalAlignment="Right"
-                               VerticalAlignment="Top"
-                               Stretch="UniformToFill"
+                               VerticalAlignment="Top" 
+                                   Foreground="Red"
                                Visibility="Collapsed" />
                     </Grid>
 
@@ -164,19 +163,19 @@
                         </Trigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="Error">
                             <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="DesignerItemTip" Property="Source" Value="{DynamicResource FlowChatError}" />
+                            <Setter TargetName="DesignerItemTip" Property="Text" Value="出错" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="Success">
                             <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="DesignerItemTip" Property="Source" Value="{DynamicResource FlowChatSuccess}" />
+                            <Setter TargetName="DesignerItemTip" Property="Text" Value="成功" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="UnHandled">
                             <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="DesignerItemTip" Property="Source" Value="{DynamicResource FlowChatUndo}" />
+                            <Setter TargetName="DesignerItemTip" Property="Text" Value="未处理" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="Execute">
                             <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="DesignerItemTip" Property="Source" Value="{DynamicResource FlowChatExecute}" />
+                            <Setter TargetName="DesignerItemTip" Property="Text" Value="Execute" />
                         </DataTrigger>
                         <!--
                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsDragConnectionOver}" Value="True">

@@ -79,7 +79,7 @@ namespace FlowChart
         /// <summary>
         /// 交易流程中的所有头结点
         /// </summary>
-        private List<Tx_Node> _allHeadNode;
+        //private List<Tx_Node> _allHeadNode;
         /// <summary>
         /// 交易流程中的线条集合
         /// </summary>
@@ -272,6 +272,52 @@ namespace FlowChart
             }
         }
         /// <summary>
+        /// 设置流程节点状态
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="batstat"></param>
+        public void SetNodeStat(string code,string batstat)
+        {
+            var lstDesigner = this.Children.OfType<ISelectable>();
+            foreach (DesignerItem item in lstDesigner)
+            {
+                if (item.CurrentSerialNumber == code.ToString())
+                {
+                    //item.Remark = batremark;
+                    //item.ErrorInfo = errinfo;
+                    switch (batstat.ToUpper())
+                    {
+                        case "Z":
+                            item.SourceTipSymbol = DesignerItemTip.Error; //失败
+                            item.ToolTip = "结账失败";
+                            break;
+                        case "Y":
+                            item.SourceTipSymbol = DesignerItemTip.Success;//成功
+                            item.ToolTip = "结账成功";
+                            break;
+                        case "N":
+                            item.SourceTipSymbol = DesignerItemTip.UnHandled;//未处理
+                            item.ToolTip = "未处理";
+                            break;
+                        case "S":
+                            item.SourceTipSymbol = DesignerItemTip.Execute;//正在执行
+                            //if (_focusAdornerLayer == null)
+                            //{
+                            //    _focusAdornerLayer = AdornerLayer.GetAdornerLayer(item);
+                            //}
+                            //_preAdorder = new FocusAdorner(item);
+                            //_preAdorder.IsClipEnabled = true;
+                            //_focusAdornerLayer.Add(_preAdorder);
+                            item.ToolTip = "正在执行";
+                            break;
+                        default:
+                            item.SourceTipSymbol = DesignerItemTip.None;
+                            break;
+                    }
+                }
+            }
+        }
+        /// <summary>
         /// 初始化数据 
         /// 确定交易流程节点集合
         /// 确定线条集合
@@ -316,14 +362,13 @@ namespace FlowChart
             _nodes[0].Y = _startY;
             _layOutCount++;
             _countedNodes.Add(_nodes[0]);
-            LayOut_NextNodes(_nodes[0]);
-            _allHeadNode = firstNode;   //查找非起始交易的头节点        
+            LayOut_NextNodes(_nodes[0]);       
             foreach (Tx_Node nextLayNode in nodes)
             {
-                if (_allHeadNode != null && _allHeadNode.Count() > 0)
+                if (firstNode != null && firstNode.Count() > 0)
                 {
                     //非起始子交易的头结点树的分布控制
-                    foreach (Tx_Node txNodeHaad in _allHeadNode)
+                    foreach (Tx_Node txNodeHaad in firstNode)
                     {
                         if (txNodeHaad.Code != nextLayNode.Code)
                         {

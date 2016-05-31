@@ -44,6 +44,12 @@
     <Reference Include="TellerSystem.Library.Ext">
       <HintPath>..\..\..\..\..\..\..\Working\Trunk_ts\TradeCode\App\PubRef\ProjectRef\TellerSystem.Library.Ext.dll</HintPath>
     </Reference>
+    <Reference Include="TellerSystem.NewBlueThemes">
+      <HintPath>..\..\..\..\..\..\..\Working\3.0\Project\trunk\Develop\PubRef\ProjectRef\TellerSystem.NewBlueThemes.dll</HintPath>
+    </Reference>
+    <Reference Include="TellerSystem.Resources">
+      <HintPath>..\..\..\..\..\..\..\Working\Trunk_ts\TradeCode\App\PubRef\ProjectRef\TellerSystem.Resources.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>

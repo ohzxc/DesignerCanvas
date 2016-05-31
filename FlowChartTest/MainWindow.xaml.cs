@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Timers;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using FlowChart;
 
 namespace FlowChartTest
@@ -21,14 +10,11 @@ namespace FlowChartTest
     /// </summary>
     public partial class MainWindow : Window
     {
+        private int i=0;
+
         public MainWindow()
         {
             InitializeComponent();
-          
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
             flowChart.LoadFlowChart(new List<Tx_Node>
             {
                 new Tx_Node
@@ -38,7 +24,7 @@ namespace FlowChartTest
                    Sub_Code="2",
                    X=0,
                    Y=0,
-                   Stat="4",
+                   Stat="Z",
                    Name="ECIF"
                 },
                 new Tx_Node
@@ -48,7 +34,7 @@ namespace FlowChartTest
                     Sub_Code="3",
                     X=0,
                     Y=0,
-                    Stat="4",
+                    Stat="N",
                     Name="核心"
                 },
                 new Tx_Node
@@ -58,20 +44,38 @@ namespace FlowChartTest
                     Sub_Code="",
                     X=0,
                     Y=0,
-                    Stat="4",
+                    Stat="N",
                     Name="前端"
                 },
                 new Tx_Node
                 {
                     Code="4",
                     Conditions="3",
-                    Sub_Code="3",
+                    Sub_Code="3,5",
                     X=0,
                     Y=0,
-                    Stat="4",
+                    Stat="S",
                     Name="财务"
+                },
+                new Tx_Node
+                {
+                    Code="5",
+                    Conditions="3",
+                    Sub_Code="",
+                    X=0,
+                    Y=0,
+                    Stat="N",
+                    Name="ods"
                 },
             });
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            flowChart.SetNodeStat(i.ToString(), "Y");
+            i++;
+        }
+
+     
     }
 }
