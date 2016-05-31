@@ -368,35 +368,6 @@ namespace FlowChart
             LayOut_NextNodes(_nodes[0]);       
         }
         /// <summary>
-        /// 找出交易流程的所有头结点
-        /// </summary>
-        /// <returns></returns>
-        private List<Tx_Node> GetHeadNodes()
-        {
-            List<Tx_Node> headNodes = new List<Tx_Node>();
-            foreach (Tx_Node node in _nodes)
-            {
-                bool found = false;
-                if (node.Code == startNode || node.Code == endNode)
-                {
-                    continue;
-                }
-                foreach (Tx_Entry entry in this._allEntrys)
-                {
-                    if (entry.EndNode == node.Code)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    headNodes.Add(node);
-                }
-            }
-            return headNodes;
-        }
-        /// <summary>
         /// 计算一个节点后续节点的位置算法
         /// </summary>
         /// <param name="nodeIndex"></param>
@@ -617,16 +588,7 @@ namespace FlowChart
                 Canvas.SetZIndex(ordered[i], i);
             }
         }
-        /// <summary>
-        /// 判断奇数和偶数
-        /// </summary>
-        /// <param name="n"></param>
-        /// <returns>True-奇数，False-偶数</returns>
-        static bool IsOdd(int n)
-        {
-            return Convert.ToBoolean(n % 2);
-        }
-
+        
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
