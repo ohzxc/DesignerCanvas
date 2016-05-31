@@ -29,15 +29,15 @@ namespace FlowChartTest
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            flowChart.LoadFlowChat(new List<Tx_Node>
+            flowChart.LoadFlowChart(new List<Tx_Node>
             {
                 new Tx_Node
                 {
                     Code="1",
                     Conditions="2",
                    Sub_Code="2",
-                   X=100,
-                   Y=100,
+                   X=0,
+                   Y=0,
                    Stat="4",
                    Name="ECIF"
                 },
@@ -60,6 +60,16 @@ namespace FlowChartTest
                     Y=0,
                     Stat="4",
                     Name="前端"
+                },
+                new Tx_Node
+                {
+                    Code="4",
+                    Conditions="3",
+                    Sub_Code="3",
+                    X=0,
+                    Y=0,
+                    Stat="4",
+                    Name="财务"
                 },
             });
         }

@@ -39,27 +39,27 @@ namespace FlowChart
         /// <summary>
         /// 界面元素排序层数
         /// </summary>
-        private int m_LayOutCount = 0;
+        private int _layOutCount = 0;
         /// <summary>
         /// 开始节点和结束节点X轴偏移位置
         /// </summary>
-        private const float mc_START_X = 20f;
+        private const float _startX = 20f;
         /// <summary>
         /// 开始节点和结束节点Y轴偏移位置
         /// </summary>
-        private const float mc_START_Y = 10f;
+        private const float _startY = 10f;
         /// <summary>
         /// 相邻元素之间的偏移量
         /// </summary>
-        private const float mc_OFFSET_X = 220f;
+        private const float _offsetX = 220f;
         /// <summary>
         /// 相邻元素之间的偏移量
         /// </summary>
-        private const float mc_OFFSET_Y = 120f;
+        private const float _offsetY = 120f;
         /// <summary>
         /// 在界面最左边的节点图形的X坐标
         /// </summary>
-        private float m_Leftest_X = float.Epsilon;
+        private float _LeftestX = float.Epsilon;
         /// <summary>
         /// 开始节点编码
         /// </summary>
@@ -71,19 +71,19 @@ namespace FlowChart
         /// <summary>
         /// 确定位置后的交易节点集合
         /// </summary>
-        private List<Tx_Node> m_LstNodes;
+        private List<Tx_Node> _countedNodes;
         /// <summary>
         /// 交易流程中的结点
         /// </summary>
-        private List<Tx_Node> m_Nodes;
+        private List<Tx_Node> _nodes;
         /// <summary>
         /// 交易流程中的所有头结点
         /// </summary>
-        private List<Tx_Node> m_LstHeadNode;
+        private List<Tx_Node> _allHeadNode;
         /// <summary>
         /// 交易流程中的线条集合
         /// </summary>
-        private List<Tx_Entry> m_LstEntrys;
+        private List<Tx_Entry> _allEntrys;
         /// <summary>
         /// 节点
         /// </summary>
@@ -102,21 +102,21 @@ namespace FlowChart
         /// 初始化流程图
         /// </summary>
         /// <param name="flowList"></param>
-        public void LoadFlowChat(List<Tx_Node> flowList)
+        public void LoadFlowChart(List<Tx_Node> flowList)
         {
-            m_LstNodes = new List<Tx_Node>();
-            m_Nodes = new List<Tx_Node>();//交易流程节点集合
-            m_LstEntrys = new List<Tx_Entry>();//确定线条集合
+            _countedNodes = new List<Tx_Node>();
+            _nodes = new List<Tx_Node>();
+            _allEntrys = new List<Tx_Entry>();
             if (flowList == null || flowList.Count() < 1) return;
-            int m_MaxFlowCode = flowList.Count() + 1;
-            startNode = flowList.Select(x => x.Code).Min();
-            endNode = m_MaxFlowCode.ToString();
-            m_Nodes.Add(new Tx_Node(startNode, "", "开始"));
-            m_Nodes.Add(new Tx_Node(endNode, "", "结束"));
+            //int m_MaxFlowCode = flowList.Count() + 1;
+            startNode =(Convert.ToInt32(flowList.Select(x => x.Code).Min())-1).ToString();
+            endNode = (Convert.ToInt32(flowList.Select(x => x.Code).Max()) + 1).ToString();
+            _nodes.Add(new Tx_Node(startNode, "", "开始"));
+            _nodes.Add(new Tx_Node(endNode, "", "结束"));
             LayOut(flowList);//确定布局,初始化数据
-            if (m_LstNodes == null) return;
+            if (_countedNodes == null) return;
             #region 构造流程节点
-            foreach (var node in m_LstNodes)
+            foreach (var node in _countedNodes)
             {
                 Label lbl = new Label { Width = 150, Height = 45, Content = node.Name, Tag = node.Code };
                 lbl.Style = nodeStyle as Style;
@@ -167,8 +167,8 @@ namespace FlowChart
 
             #region  构造流程线条
             this.InvalidateVisual();//使元素的呈现无效，并强制执行完整的新布局处理过程。布局循环完成后              
-            if (m_LstEntrys == null) return;
-            foreach (Tx_Entry entry in m_LstEntrys)
+            if (_allEntrys == null) return;
+            foreach (Tx_Entry entry in _allEntrys)
             {
                 string sourceID = entry.StartNode;
                 string sinkID = entry.EndNode;
@@ -210,7 +210,7 @@ namespace FlowChart
                 var batremark = xmlNode.Attributes["batremark"].Value;
                 nodeList.Add(new Tx_Node(code,parentcode,name,"",batdesc,batremark,batstat,errinfo));
             }
-            this.LoadFlowChat(nodeList);
+            this.LoadFlowChart(nodeList);
         }
         /// <summary>
         /// 设置流程节点状态
@@ -279,45 +279,59 @@ namespace FlowChart
         /// </summary>
         internal void LayOut(List<Tx_Node> flowList)
         {
-            this.m_LayOutCount = 0; //初始化界面层级数
+            _layOutCount = 0; //初始化界面层级数
+            //确定所有连线
             foreach (var item in flowList)
             {
-                var _s = item.Sub_Code.Split(',');
-                _s.ToList().ForEach(k =>
+                var _s = item.Sub_Code.Split(',').ToList();
+                _s.RemoveAll(x => x.Length == 0);
+                _s.ForEach(k =>
                 {
-                    Tx_Entry entry = new Tx_Entry(k, item.Code, item.Conditions);
-                    m_LstEntrys.Add(entry);
+                    Tx_Entry entry = new Tx_Entry( item.Code,k, item.Conditions);
+                    _allEntrys.Add(entry);
                 });
-                m_Nodes.Add(item);
+                _nodes.Add(item);
             }
-
-            var lstNode = FindLstNode(flowList);
-            if (lstNode != null)
-                m_LstEntrys.Add(new Tx_Entry(lstNode[0].Code, endNode, ""));//添加虚拟结束节点
-            if (m_Nodes.Count < 1) return;
-            var nodes = from n in m_Nodes                      
+            //尾结点与结束的连线
+            var lstNode = FindLastNode(flowList);
+            if (lstNode.Count > 0)
+                lstNode.ForEach(x =>
+                {
+                    _allEntrys.Add(new Tx_Entry(x.Code, endNode, ""));//添加结束节点的连线
+                    x.Sub_Code += "," + _nodes[1].Code;//给开始节点的子节点属性赋值
+                });
+            //排序
+            if (_nodes.Count < 1) return;
+            var nodes = from n in _nodes                      
                         orderby int.Parse(n.Code) ascending
                         select n;
-            Tx_Node firstNode = this.FindFirstNode(startNode.Trim());
-            firstNode.X = mc_START_X;
-            firstNode.Y = mc_START_Y;
-            this.m_LayOutCount++;
-            m_LstNodes.Add(firstNode);
-            this.LayOut_NextNodes(firstNode);
-            m_LstHeadNode = GetHeadNodes();   //查找非起始交易的头节点        
+            var firstNode = FindFirstNode(flowList);
+            if (firstNode.Count > 0)
+                firstNode.ForEach(x =>
+                {
+                    _allEntrys.Add(new Tx_Entry(startNode, x.Code, ""));//添加开始节点的连线
+                    _nodes[0].Sub_Code += "," + x.Code;//给开始节点的子节点属性赋值
+                });
+            _nodes[0].X = _startX;
+            _nodes[0].Y = _startY;
+            _layOutCount++;
+            _countedNodes.Add(_nodes[0]);
+            LayOut_NextNodes(_nodes[0]);
+            _allHeadNode = firstNode;   //查找非起始交易的头节点        
             foreach (Tx_Node nextLayNode in nodes)
             {
-                if (m_LstHeadNode != null && m_LstHeadNode.Count() > 0)
+                if (_allHeadNode != null && _allHeadNode.Count() > 0)
                 {
                     //非起始子交易的头结点树的分布控制
-                    foreach (Tx_Node txNodeHaad in m_LstHeadNode)
+                    foreach (Tx_Node txNodeHaad in _allHeadNode)
                     {
-                        if (txNodeHaad.Code == nextLayNode.Code)
+                        if (txNodeHaad.Code != nextLayNode.Code)
                         {
-                            txNodeHaad.X = mc_START_X + 100;
-                            txNodeHaad.Y = mc_START_Y;
-                            this.m_LayOutCount++;
-                            m_LstNodes.Add(txNodeHaad);
+                            txNodeHaad.X = _startX + 100;
+                            txNodeHaad.Y = _startY;
+                            this._layOutCount++;
+                            if(!_countedNodes.Contains(txNodeHaad))
+                                _countedNodes.Add(txNodeHaad);
                             this.LayOut_NextNodes(txNodeHaad);
                         }
                     }
@@ -332,14 +346,14 @@ namespace FlowChart
         private List<Tx_Node> GetHeadNodes()
         {
             List<Tx_Node> headNodes = new List<Tx_Node>();
-            foreach (Tx_Node node in m_Nodes)
+            foreach (Tx_Node node in _nodes)
             {
                 bool found = false;
                 if (node.Code == startNode || node.Code == endNode)
                 {
                     continue;
                 }
-                foreach (Tx_Entry entry in this.m_LstEntrys)
+                foreach (Tx_Entry entry in this._allEntrys)
                 {
                     if (entry.EndNode == node.Code)
                     {
@@ -364,9 +378,7 @@ namespace FlowChart
             List<Tx_Node> lstNextNodes = this.FindNextNodes(node);
             //若后续节点串为空或者已布局节点数等于全部节点数，则退出布局
             if (lstNextNodes == null || lstNextNodes.Count == 0)
-            {
                 return;
-            }
             float half = 0f;
             //偶数个节点
             if (lstNextNodes.Count % 2 == 0)
@@ -382,82 +394,97 @@ namespace FlowChart
                 //只对还没有定位的，进行定位;并对其后续节点定位
                 if (lstNextNodes[i].X == 0 && lstNextNodes[i].Y == 0)
                 {
-                    lstNextNodes[i].Y = node.Y + mc_OFFSET_Y;
+                    lstNextNodes[i].Y = node.Y + _offsetY;
 
                     if (lstNextNodes[i].Code != endNode)
                     {
-                        lstNextNodes[i].X = node.X + (i - half) * mc_OFFSET_X;
-                        if (!string.IsNullOrEmpty(node.Sub_Code))
-                        {
-                            string[] sub_node = node.Sub_Code.Split(',');
-                            for (int y = 0; y < sub_node.Count(); y++)
-                            {
-                                if (sub_node.Count() <= 1)
-                                {
-                                    break;
-                                }
-                                //else
-                                //{
-                                //    float offset = i - half == 0 ? 1 : i - half;
-                                //    lstNextNodes[i].X = node.X + offset * mc_OFFSET_X;
-                                //}
-                            }
-                        }
+                        lstNextNodes[i].X = node.X + (i - half) * _offsetX;
+                        //if (!string.IsNullOrEmpty(node.Sub_Code))
+                        //{
+                        //    string[] sub_node = node.Sub_Code.Split(',');
+                        //    for (int y = 0; y < sub_node.Count(); y++)
+                        //    {
+                        //        if (sub_node.Count() <= 1)
+                        //        {
+                        //            break;
+                        //        }
+                        //        //else
+                        //        //{
+                        //        //    float offset = i - half == 0 ? 1 : i - half;
+                        //        //    lstNextNodes[i].X = node.X + offset * mc_OFFSET_X;
+                        //        //}
+                        //    }
+                        //}
                     }
                     else
                     {
-                        lstNextNodes[i].X = mc_START_X;
+                        lstNextNodes[i].X = _startX;
                         float MaxY = 0.0f;
-                        foreach (var maxNodeY in m_LstNodes)
+                        foreach (var maxNodeY in _countedNodes)
                         {
                             if (maxNodeY.Y >= MaxY)
                             {
                                 MaxY = maxNodeY.Y;
                             }
                         }
-                        lstNextNodes[i].Y = MaxY + mc_OFFSET_Y;
+                        lstNextNodes[i].Y = MaxY + _offsetY;
                     }
-                    m_LstNodes.Add(lstNextNodes[i]);
+                    _countedNodes.Add(lstNextNodes[i]);
                     //保存界面最左的图形节点的X坐标值
-                    if (lstNextNodes[i].X < m_Leftest_X)
+                    if (lstNextNodes[i].X < _LeftestX)
                     {
-                        m_Leftest_X = lstNextNodes[i].X;
+                        _LeftestX = lstNextNodes[i].X;
                     }
-                    if (lstNextNodes.Count() == 1)
+
+                    var s = lstNextNodes[i].Sub_Code.Split(',').ToList();
+                    s.RemoveAll(x => x.Length == 0);
+                    if (s.Count > 0)
                     {
-                        this.m_LayOutCount++;
+                        _layOutCount++;
                         //递归对后续节点进行布局
                         this.LayOut_NextNodes(lstNextNodes[i]);
                     }
                 }
             }
-            //递归对后续节点进行布局
-            if (lstNextNodes.Count() > 1)
-            {
-                this.m_LayOutCount++;
-            }
+            ////递归对后续节点进行布局
+            //if (lstNextNodes.Count() > 1)
+            //{
+            //    this._layOutCount++;
+            //    //递归对后续节点进行布局
+            //}
         }
         /// <summary>
         /// 找到第一个没有前导节点的节点
         /// </summary>
         /// <returns></returns>
-        private Tx_Node FindFirstNode(string code)
+        private List<Tx_Node> FindFirstNode(List<Tx_Node> flowList)
         {
-            if (string.IsNullOrEmpty(code))
+            if (flowList == null)
                 return null;
-            foreach (Tx_Node node in this.m_Nodes)
+            var re = new List<Tx_Node>();
+            
+            foreach (Tx_Node node in flowList)
             {
-                if (node.Code == code.Trim())
-                    return node;
+                var isExsit = false;
+                foreach (Tx_Node item in flowList)
+                {
+                    var s = item.Sub_Code.Split(',').ToList();
+                    if (s.Contains(node.Code))
+                    {
+                        isExsit = true;
+                        continue;
+                    }
+                }
+                if (!isExsit) re.Add(node);
             }
-            return null;
+            return re;
         }
         /// <summary>
         /// 找到节点序列中最后一个节点
         /// </summary>
         /// <param name="flowList"></param>
         /// <returns></returns>
-        private List<Tx_Node> FindLstNode(List<Tx_Node> flowList)
+        private List<Tx_Node> FindLastNode(List<Tx_Node> flowList)
         {
             if (flowList == null)
                 return null;
@@ -480,11 +507,11 @@ namespace FlowChart
         {
             List<Tx_Node> lstNextNodes = new List<Tx_Node>();
             //根据线条查找后续节点串
-            foreach (Tx_Entry entry in this.m_LstEntrys)
+            foreach (Tx_Entry entry in this._allEntrys)
             {
                 if (entry.StartNode == node.Code)
                 {
-                    foreach (var nodes in m_Nodes)
+                    foreach (var nodes in _nodes)
                     {
                         if (nodes.Code == entry.EndNode)
                         {
@@ -505,12 +532,12 @@ namespace FlowChart
             string subtxCode = "";
             List<Tx_Node> lstPreNodes = new List<Tx_Node>();
             //根据线条查找后续节点串
-            foreach (Tx_Node entry in this.m_Nodes)
+            foreach (Tx_Node entry in this._nodes)
             {
                 if (entry.Code == node.Code)
                 {
                     subtxCode = node.Code;
-                    foreach (Tx_Node lstentry in this.m_LstNodes)
+                    foreach (Tx_Node lstentry in this._countedNodes)
                     {
                         if (lstentry.Sub_Code == subtxCode)
                         {
