@@ -109,7 +109,7 @@ namespace FlowChart
             m_LstEntrys = new List<Tx_Entry>();//确定线条集合
             if (flowList == null || flowList.Count() < 1) return;
             int m_MaxFlowCode = flowList.Count() + 1;
-            startNode = flowList.Select(x => x.Sub_Code).Min();
+            startNode = flowList.Select(x => x.Code).Min();
             endNode = m_MaxFlowCode.ToString();
             m_Nodes.Add(new Tx_Node(startNode, "", "开始"));
             m_Nodes.Add(new Tx_Node(endNode, "", "结束"));
@@ -290,9 +290,10 @@ namespace FlowChart
                 });
                 m_Nodes.Add(item);
             }
-            Tx_Node lstNode = FindLstNode(flowList);//查找最后一个节点和结束节点串联
+
+            var lstNode = FindLstNode(flowList);
             if (lstNode != null)
-                m_LstEntrys.Add(new Tx_Entry(lstNode.Code, endNode, ""));//添加虚拟结束节点
+                m_LstEntrys.Add(new Tx_Entry(lstNode[0].Code, endNode, ""));//添加虚拟结束节点
             if (m_Nodes.Count < 1) return;
             var nodes = from n in m_Nodes                      
                         orderby int.Parse(n.Code) ascending
@@ -456,28 +457,19 @@ namespace FlowChart
         /// </summary>
         /// <param name="flowList"></param>
         /// <returns></returns>
-        private Tx_Node FindLstNode(List<Tx_Node> flowList)
+        private List<Tx_Node> FindLstNode(List<Tx_Node> flowList)
         {
             if (flowList == null)
                 return null;
+            var re = new List<Tx_Node>();
             foreach (Tx_Node node in flowList)
             {
-                bool isExist = false;
-                foreach (Tx_Node subnode in flowList)
-                { 
-                     var _s = subnode.Sub_Code.Split(',');
-                     if (_s.Contains(node.Code))
-                     {
-                         isExist = true;
-                         break;      
-                     }           
-                }
-                if (!isExist)
-                {
-                    return node;
-                }
+                var s = node.Sub_Code.Split(',').ToList();
+                s.RemoveAll(x => x.Length == 0);
+                if (s.Count == 0)
+                    re.Add(node);
             }
-            return null;
+            return re;
         }
         /// <summary>
         /// 查找指定节点的后续节点

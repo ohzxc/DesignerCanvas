@@ -24,6 +24,11 @@ namespace FlowChartTest
         public MainWindow()
         {
             InitializeComponent();
+          
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
             flowChart.LoadFlowChat(new List<Tx_Node>
             {
                 new Tx_Node
@@ -34,16 +39,27 @@ namespace FlowChartTest
                    X=100,
                    Y=100,
                    Stat="4",
+                   Name="ECIF"
                 },
                 new Tx_Node
                 {
                     Code="2",
                     Conditions="3",
-                    Sub_Code="1",
+                    Sub_Code="3",
                     X=0,
                     Y=0,
                     Stat="4",
-
+                    Name="核心"
+                },
+                new Tx_Node
+                {
+                    Code="3",
+                    Conditions="3",
+                    Sub_Code="",
+                    X=0,
+                    Y=0,
+                    Stat="4",
+                    Name="前端"
                 },
             });
         }

@@ -10,8 +10,8 @@
     <Window.Resources>
         <ResourceDictionary Source="/FlowChart;component/Resources/Generic.xaml" />
     </Window.Resources>
-    <Grid>
-        <controls:DesignerCanvas x:Name="flowChart">
-        </controls:DesignerCanvas>
+    <Grid Margin="10">
+        <Button VerticalAlignment="Top" HorizontalAlignment="Right" Content="开始" Click="Button_Click"/>
+        <controls:DesignerCanvas x:Name="flowChart"/>
     </Grid>
 </Window>
