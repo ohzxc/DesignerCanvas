@@ -146,63 +146,36 @@
                         <Control x:Name="PART_ConnectorDecorator"
                                  Template="{StaticResource ConnectorDecoratorTemplate}"
                                  Visibility="Hidden" />
-                        <Grid x:Name="grid" Width="150" Height="30">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="30"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Ellipse x:Name="ellipse" Grid.Column="1" StrokeThickness="1" Stroke="DodgerBlue" Margin="5"  RenderTransformOrigin="0.5,0.5">
-                                <Ellipse.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform/>
-                                        <SkewTransform/>
-                                        <RotateTransform/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
-                            <ContentPresenter Grid.Column="2" HorizontalAlignment="Stretch"
-                        	VerticalAlignment="Center"
-                        	IsHitTestVisible="False"
-                        	TextBlock.Foreground="{TemplateBinding Foreground}"
-                        	ToolTip="{TemplateBinding Content}"     />
-                            <TextBlock Grid.Column="0"  
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
-                                   Foreground="{TemplateBinding Foreground}"
-                                   IsHitTestVisible="False"
-                                   Text="{TemplateBinding Tag}"
-                                   ToolTip="{TemplateBinding Content}"
-                                   Visibility="Visible" />
-                            <Path  x:Name="success" Visibility="Collapsed" Grid.Column="1" Data="M70.289203,14.978149 C71.198073,16.269701 72.352635,17.628186 73.579692,18.679949 75.882533,16.377107 77.494871,12.834455 79.955013,10.813625" Margin="10.289,10.814,9.045,10.32" Stretch="Fill" Stroke="White" StrokeThickness="1"/>
-                            <Path x:Name="error"  Visibility="Collapsed" Grid.Column="1" Data="M71.677378,11.122108 C73.523059,11.78128 74.653719,13.034008 75.841902,14.618252 76.655853,13.804302 77.448921,12.721862 78.104113,11.739075 78.789845,10.710477 78.261124,10.659383 79.800771,10.659383 79.800771,11.807241 78.194205,13.403422 77.487147,14.46401 76.938086,15.287601 76.551558,14.803631 77.127249,15.955013 77.603972,16.908458 78.146107,17.751593 78.772494,18.628535 79.042704,19.00683 79.2899,19.454969 79.595116,19.811054 79.878102,20.141204 80.250483,19.85628&#xD;&#xA;79.800771,20.530848 79.268902,21.328652 79.535765,21.23401 78.206941,20.170951 77.085681,19.273943 76.005496,18.203218 75.636247,16.726221 74.653216,17.053898 73.942338,18.61087 73.374036,19.605398 73.098842,20.086988 72.798737,20.526706 72.448586,20.993573 72.041954,21.535749 72.446611,22.07129 71.368895,20.993573 70.852934,20.477613 71.077628,20.7935 71.728792,19.708226 72.029775,19.206587 72.279452,18.694841 72.705656,18.268638 73.306466,17.667827&#xD;&#xA;74.234556,17.061736 74.607969,16.31491 72.747047,15.384449 72.166897,13.728528 70.90617,12.047558 71.60307,11.873333 71.47864,11.817191 71.83162,11.173522" Margin="10.906,10.659,8.99,7.383" Stretch="Fill" Stroke="White" StrokeThickness="0" Fill="White"/>
-                            <Path x:Name="unhandle"  Visibility="Collapsed" Grid.Column="1" Data="M74.145244,9.9910026 C74.186131,11.258504 74.196658,12.523866 74.196658,13.79563 74.196658,14.258355 74.196658,14.72108 74.196658,15.183805 74.196658,15.34063 74.039646,15.530156 74.299486,15.595116 74.937626,15.754651 75.737641,15.595116 76.407455,15.595116 78.508773,15.595116 80.586713,15.664231 82.628535,15.492288" Margin="14.145,9.991,6.371,13.334" Stretch="Fill" Stroke="DodgerBlue" StrokeThickness="1"/>
-                        </Grid>
+                        <TextBlock x:Name="DesignerItemTip" 
+                               Height="15"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Top" 
+                                   Foreground="Red"
+                               Visibility="Collapsed" />
                     </Grid>
 
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True">
-                            <!--<Setter TargetName="PART_ResizeDecorator" Property="Visibility" Value="Visible" />-->
+                            <Setter TargetName="PART_ResizeDecorator" Property="Visibility" Value="Visible" />
                         </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <!--<Setter TargetName="PART_ConnectorDecorator" Property="Visibility" Value="Visible" />-->
+                            <Setter TargetName="PART_ConnectorDecorator" Property="Visibility" Value="Visible" />
                         </Trigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="Error">
-                            <Setter TargetName="ellipse" Property="Stroke" Value="Red" />
-                            <Setter TargetName="ellipse" Property="Fill" Value="Red" />
-                            <Setter TargetName="error" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Text" Value="出错" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="Success">
-                            <Setter TargetName="ellipse" Property="Stroke" Value="Green" />
-                            <Setter TargetName="ellipse" Property="Fill" Value="Green" />
-                            <Setter TargetName="success" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Text" Value="成功" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="UnHandled"> 
-                            <Setter TargetName="unhandle" Property="Visibility" Value="Visible" />
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="UnHandled">
+                            <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Text" Value="未处理" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=SourceTipSymbol}" Value="Execute">
-                            <Setter TargetName="unhandle" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="DesignerItemTip" Property="Text" Value="Execute" />
                         </DataTrigger>
                         <!--
                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsDragConnectionOver}" Value="True">

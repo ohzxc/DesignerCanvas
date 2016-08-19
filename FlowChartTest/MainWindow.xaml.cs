@@ -15,7 +15,7 @@ namespace FlowChartTest
         public MainWindow()
         {
             InitializeComponent();
-            flowChart.LoadFlowChart(new List<Tx_Node>
+            //flowChart.LoadFlowChart(new List<Tx_Node>
             {
                 new Tx_Node
                 {

@@ -103,6 +103,7 @@ namespace FlowChart
             FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(
                 typeof(DesignerItem), new FrameworkPropertyMetadata(typeof(DesignerItem)));
         }
+        public DesignerItem() { }
         /// <summary>
         /// 当前序号
         /// </summary>
