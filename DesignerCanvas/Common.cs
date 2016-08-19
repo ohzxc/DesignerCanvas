@@ -70,6 +70,7 @@ namespace DesignerCanvas
                 parent as Window :
                 GetOwnerWindow(parent);
         }
-           
+
+        
     }
 }
